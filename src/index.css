@@ -2,95 +2,89 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Discord-inspired design system with liquid glass effects */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Discord color palette */
+    --background: 220 13% 18%;
+    --foreground: 210 11% 96%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 223 6% 20%;
+    --card-foreground: 210 11% 96%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 223 6% 20%;
+    --popover-foreground: 210 11% 96%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 235 86% 65%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 220 13% 28%;
+    --secondary-foreground: 210 11% 96%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 13% 28%;
+    --muted-foreground: 215 8% 65%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 235 86% 65%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 13% 28%;
+    --input: 220 13% 28%;
+    --ring: 235 86% 65%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Liquid glass effects */
+    --glass-primary: 235 86% 65%;
+    --glass-secondary: 220 13% 28%;
+    --glass-bg: 223 6% 20%;
+    --glass-border: 210 11% 96%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(235, 86%, 65%) 0%, hsl(250, 100%, 75%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(220, 13%, 28%) 0%, hsl(223, 6%, 20%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsla(235, 86%, 65%, 0.1) 0%, hsla(250, 100%, 75%, 0.05) 100%);
+    
+    /* Shadows */
+    --shadow-glass: 0 8px 32px 0 hsla(235, 86%, 65%, 0.15);
+    --shadow-elevated: 0 25px 50px -12px hsla(0, 0%, 0%, 0.25);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-glass: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 220 13% 18%;
+    --foreground: 210 11% 96%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 223 6% 20%;
+    --card-foreground: 210 11% 96%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 223 6% 20%;
+    --popover-foreground: 210 11% 96%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 235 86% 65%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 13% 28%;
+    --secondary-foreground: 210 11% 96%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 220 13% 28%;
+    --muted-foreground: 215 8% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 235 86% 65%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 220 13% 28%;
+    --input: 220 13% 28%;
+    --ring: 235 86% 65%;
   }
 }
 
@@ -101,5 +95,85 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Liquid Glass Effects */
+  .glass-card {
+    @apply backdrop-blur-xl bg-gradient-to-br from-white/10 via-white/5 to-transparent;
+    @apply border border-white/20 rounded-2xl shadow-2xl;
+    @apply relative overflow-hidden;
+  }
+  
+  .glass-card::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-white/5;
+    @apply rounded-2xl;
+    mask: linear-gradient(135deg, transparent 0%, white 25%, white 75%, transparent 100%);
+  }
+  
+  .glass-header {
+    @apply backdrop-blur-md bg-gradient-to-r from-white/10 via-white/5 to-transparent;
+    @apply border-b border-white/20 relative overflow-hidden;
+  }
+  
+  .glass-header::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-white/10;
+    mask: linear-gradient(90deg, transparent 0%, white 20%, white 80%, transparent 100%);
+  }
+  
+  .glass-button {
+    @apply backdrop-blur-sm bg-gradient-to-r from-white/20 via-white/10 to-transparent;
+    @apply border border-white/30 rounded-lg shadow-lg;
+    @apply transition-all duration-200 hover:shadow-xl hover:border-white/40;
+    @apply relative overflow-hidden;
+  }
+  
+  .glass-button::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-white/30 via-transparent to-white/20;
+    @apply opacity-0 transition-opacity duration-200;
+    @apply rounded-lg;
+  }
+  
+  .glass-button:hover::before {
+    @apply opacity-100;
+  }
+  
+  .glass-input {
+    @apply backdrop-blur-sm bg-white/5 border border-white/20 rounded-lg;
+    @apply focus:border-primary/50 focus:bg-white/10 transition-all duration-200;
+    @apply placeholder:text-white/50;
+  }
+  
+  /* Animated background */
+  .animated-bg {
+    background: linear-gradient(
+      45deg,
+      hsl(235, 86%, 65%),
+      hsl(250, 100%, 75%),
+      hsl(270, 100%, 80%),
+      hsl(235, 86%, 65%)
+    );
+    background-size: 400% 400%;
+    animation: gradientShift 8s ease infinite;
+  }
+  
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  /* Floating elements */
+  .float-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
   }
 }
