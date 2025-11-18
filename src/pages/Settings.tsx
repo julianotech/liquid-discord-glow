@@ -1,5 +1,4 @@
 import { AnimatedBackground } from "@/components/AnimatedBackground";
-import { GlassHeader } from "@/components/GlassHeader";
 import { Card } from "@/components/ui/card";
 import { User, Lock, Bell, Database, Shield, ChevronRight } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
@@ -8,9 +7,8 @@ const Settings = () => {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       <AnimatedBackground />
-      <GlassHeader />
       
-      <main className="relative z-10 p-4 pb-24">
+      <main className="relative z-10 p-4 pt-6 pb-24">
         <h1 className="text-2xl font-bold text-foreground mb-6">Configurações</h1>
 
         {/* My Account Section */}

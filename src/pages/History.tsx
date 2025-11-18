@@ -1,5 +1,4 @@
 import { AnimatedBackground } from "@/components/AnimatedBackground";
-import { GlassHeader } from "@/components/GlassHeader";
 import { Card } from "@/components/ui/card";
 import { Search, Bell, ShoppingCart, Wallet, UtensilsCrossed, Car } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -16,9 +15,8 @@ const History = () => {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       <AnimatedBackground />
-      <GlassHeader />
       
-      <main className="relative z-10 p-4 pb-24">
+      <main className="relative z-10 p-4 pt-6 pb-24">
         {/* Search Header */}
         <div className="flex items-center gap-3 mb-6">
           <div className="relative flex-1">
