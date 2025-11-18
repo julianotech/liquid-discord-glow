@@ -1,9 +1,18 @@
+import { useState } from "react";
 import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { Card } from "@/components/ui/card";
-import { Search, Bell, ShoppingCart, Wallet, UtensilsCrossed, Car } from "lucide-react";
+import { Search, Bell, ShoppingCart, Wallet, UtensilsCrossed, Car, CalendarIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 const History = () => {
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
+  
   const transactions = [
     { id: 1, type: "expense", category: "Compras", place: "Supermercado", amount: -150.00, icon: ShoppingCart, date: "Hoje" },
     { id: 2, type: "income", category: "Pagamento", place: "Salário", amount: 2500.00, icon: Wallet, date: "Hoje" },
@@ -29,6 +38,63 @@ const History = () => {
           <button className="w-12 h-12 rounded-full glass-card flex items-center justify-center">
             <Bell className="w-5 h-5 text-foreground" />
           </button>
+        </div>
+
+        {/* Date Filters */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <div>
+            <p className="text-xs text-muted-foreground mb-2">Data Inicial</p>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal glass-input",
+                    !startDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {startDate ? format(startDate, "dd/MM/yyyy") : <span>Selecionar</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 glass-card border-white/10" align="start">
+                <Calendar
+                  mode="single"
+                  selected={startDate}
+                  onSelect={setStartDate}
+                  initialFocus
+                  className="pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div>
+            <p className="text-xs text-muted-foreground mb-2">Data Final</p>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal glass-input",
+                    !endDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {endDate ? format(endDate, "dd/MM/yyyy") : <span>Selecionar</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 glass-card border-white/10" align="start">
+                <Calendar
+                  mode="single"
+                  selected={endDate}
+                  onSelect={setEndDate}
+                  initialFocus
+                  className="pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
 
         {/* Transactions List */}
