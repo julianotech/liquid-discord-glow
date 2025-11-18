@@ -1,5 +1,4 @@
 import { AnimatedBackground } from "@/components/AnimatedBackground";
-import { GlassHeader } from "@/components/GlassHeader";
 import { Card } from "@/components/ui/card";
 import { UtensilsCrossed, Car, Home, Film, Heart, DollarSign, TrendingUp, Plus, ArrowLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,9 +24,8 @@ const Categories = () => {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       <AnimatedBackground />
-      <GlassHeader />
       
-      <main className="relative z-10 p-4 pb-24">
+      <main className="relative z-10 p-4 pt-6 pb-24">
         {/* Header with back button */}
         <div className="flex items-center gap-4 mb-6">
           <Button 
