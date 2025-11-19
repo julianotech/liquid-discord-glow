@@ -4,18 +4,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
+import { categoriesAPI } from "@/lib/api";
 import { useState } from "react";
 
 interface AddCategoryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCategoryAdded?: () => void;
 }
 
-export const AddCategoryDialog = ({ open, onOpenChange }: AddCategoryDialogProps) => {
+export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCategoryDialogProps) => {
   const [categoryName, setCategoryName] = useState("");
-  const [categoryType, setCategoryType] = useState<"expense" | "income">("expense"); // Adicionado
+  const [categoryType, setCategoryType] = useState<"expense" | "income">("expense");
+  const [goal, setGoal] = useState<string>("");
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!categoryName) {
       toast({
         title: "Erro",
@@ -25,12 +28,29 @@ export const AddCategoryDialog = ({ open, onOpenChange }: AddCategoryDialogProps
       return;
     }
 
-    toast({
-      title: "Categoria adicionada",
-      description: `A categoria '${categoryName}' (${categoryType === "expense" ? "Despesa" : "Receita"}) foi adicionada com sucesso.`,
-    });
-    setCategoryName(""); // Limpar o campo após adicionar
-    onOpenChange(false);
+    try {
+      await categoriesAPI.create({
+        name: categoryName,
+        type: categoryType,
+        goal: goal ? parseFloat(goal) : undefined,
+      });
+
+      toast({
+        title: "Categoria adicionada",
+        description: `A categoria '${categoryName}' (${categoryType === "expense" ? "Despesa" : "Receita"}) foi adicionada com sucesso.`,
+      });
+      
+      setCategoryName("");
+      setGoal("");
+      onCategoryAdded?.();
+      onOpenChange(false);
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível adicionar a categoria.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -63,6 +83,21 @@ export const AddCategoryDialog = ({ open, onOpenChange }: AddCategoryDialogProps
               className="bg-input border border-input focus:ring-ring focus:ring-1"
             />
           </div>
+
+          {categoryType === "expense" && (
+            <div className="space-y-2">
+              <Label className="text-foreground">Meta Mensal (Opcional)</Label>
+              <Input
+                type="number"
+                placeholder="Ex: 500.00"
+                value={goal}
+                onChange={(e) => setGoal(e.target.value)}
+                className="bg-input border border-input focus:ring-ring focus:ring-1"
+                step="0.01"
+                min="0"
+              />
+            </div>
+          )}
         </div>
 
         <DialogFooter>
