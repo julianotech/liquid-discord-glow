@@ -1,12 +1,11 @@
-import { useState } from "react";
-import { AnimatedBackground } from "@/components/AnimatedBackground";
-import { Card } from "@/components/ui/card";
-import { UtensilsCrossed, Car, Home, Film, Heart, DollarSign, TrendingUp, Plus, ArrowLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { AddTransactionDrawer } from "@/components/AddTransactionDrawer";
+import AddTransactionDrawer from "@/components/AddTransactionDrawer";
 import { EditCategoryDialog } from "@/components/EditCategoryDialog";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { ArrowLeft, Car, ChevronRight, DollarSign, Film, Heart, Home, Plus, TrendingUp, UtensilsCrossed } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Categories = () => {
   const navigate = useNavigate();
@@ -49,7 +48,7 @@ const Categories = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      <AnimatedBackground />
+      {/* <AnimatedBackground /> */}
       
       <main className="relative z-10 p-4 pt-6 pb-24">
         {/* Header with back button */}

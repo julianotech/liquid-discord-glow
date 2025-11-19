@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerFooter } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
 
 interface AddTransactionDrawerProps {
   open: boolean;
@@ -32,7 +32,7 @@ const incomeCategories = [
   "Outros",
 ];
 
-export const AddTransactionDrawer = ({ open, onOpenChange, defaultCategory, defaultType }: AddTransactionDrawerProps) => {
+const AddTransactionDrawer = ({ open, onOpenChange, defaultCategory, defaultType }: AddTransactionDrawerProps) => {
   const [type, setType] = useState<"expense" | "income">(defaultType || "expense");
   const [category, setCategory] = useState(defaultCategory || "");
   const [amount, setAmount] = useState("");
@@ -66,9 +66,12 @@ export const AddTransactionDrawer = ({ open, onOpenChange, defaultCategory, defa
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="glass-card border-white/10">
+      <DrawerContent className="bg-card rounded-lg border border-border shadow-md z-[10000]">
         <DrawerHeader>
           <DrawerTitle className="text-foreground">Adicionar Transação</DrawerTitle>
+          <DrawerDescription>
+            Adicione uma nova transação à sua carteira.
+          </DrawerDescription>
         </DrawerHeader>
         
         <div className="p-4 space-y-4">
@@ -79,21 +82,21 @@ export const AddTransactionDrawer = ({ open, onOpenChange, defaultCategory, defa
               setType(value);
               setCategory("");
             }}>
-              <SelectTrigger className="glass-input">
+              <SelectTrigger className="bg-input border border-input focus:ring-ring focus:ring-1 pointer-events-auto">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="pointer-events-auto">
                 <SelectItem value="expense">Despesa</SelectItem>
                 <SelectItem value="income">Receita</SelectItem>
               </SelectContent>
             </Select>
           </div>
-
+          
           {/* Category Selection */}
           <div className="space-y-2">
             <Label className="text-foreground">Categoria *</Label>
             <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="glass-input">
+              <SelectTrigger className="bg-input border border-input focus:ring-ring focus:ring-1">
                 <SelectValue placeholder="Selecione uma categoria" />
               </SelectTrigger>
               <SelectContent>
@@ -103,7 +106,7 @@ export const AddTransactionDrawer = ({ open, onOpenChange, defaultCategory, defa
               </SelectContent>
             </Select>
           </div>
-
+          
           {/* Amount */}
           <div className="space-y-2">
             <Label className="text-foreground">Valor *</Label>
@@ -112,12 +115,12 @@ export const AddTransactionDrawer = ({ open, onOpenChange, defaultCategory, defa
               placeholder="0.00"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="glass-input"
+              className="bg-input border border-input focus:ring-ring focus:ring-1"
               step="0.01"
               min="0"
             />
           </div>
-
+          
           {/* Description */}
           <div className="space-y-2">
             <Label className="text-foreground">Descrição</Label>
@@ -125,10 +128,10 @@ export const AddTransactionDrawer = ({ open, onOpenChange, defaultCategory, defa
               placeholder="Adicione uma descrição..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="glass-input"
+              className="bg-input border border-input focus:ring-ring focus:ring-1"
             />
           </div>
-
+          
           {/* Date */}
           <div className="space-y-2">
             <Label className="text-foreground">Data</Label>
@@ -137,7 +140,7 @@ export const AddTransactionDrawer = ({ open, onOpenChange, defaultCategory, defa
                 <Button
                   variant="outline"
                   className={cn(
-                    "w-full justify-start text-left font-normal glass-input",
+                    "w-full justify-start text-left font-normal bg-input border border-input focus:ring-ring focus:ring-1",
                     !date && "text-muted-foreground"
                   )}
                 >
@@ -145,7 +148,7 @@ export const AddTransactionDrawer = ({ open, onOpenChange, defaultCategory, defa
                   {date ? format(date, "PPP") : <span>Selecione uma data</span>}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 glass-card border-white/10" align="start">
+              <PopoverContent className="w-auto p-0 bg-card rounded-lg border border-border shadow-md" align="start">
                 <Calendar
                   mode="single"
                   selected={date}
@@ -157,16 +160,20 @@ export const AddTransactionDrawer = ({ open, onOpenChange, defaultCategory, defa
             </Popover>
           </div>
         </div>
-
+        
         <DrawerFooter>
           <Button onClick={handleSubmit} className="w-full">
             Adicionar
           </Button>
-          <Button variant="outline" onClick={() => onOpenChange(false)} className="w-full">
-            Cancelar
-          </Button>
+          <DrawerClose asChild>
+            <Button variant="outline" onClick={() => onOpenChange(false)} className="w-full">
+              Cancelar
+            </Button>
+          </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );
 };
+
+export default AddTransactionDrawer;

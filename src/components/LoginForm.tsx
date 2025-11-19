@@ -30,7 +30,7 @@ export const LoginForm = () => {
     toast({
       title: "🎉 Login realizado com sucesso!",
       description: "Redirecionando para o dashboard...",
-      variant: "glass",
+      variant: "default",
       className: "border-primary/30",
     });
     
@@ -38,9 +38,9 @@ export const LoginForm = () => {
   };
 
   return (
-    <Card className="glass-card w-full max-w-md mx-auto">
+    <Card className="bg-card rounded-lg border border-border shadow-md w-full max-w-md mx-auto">
       <CardHeader className="text-center pb-6">
-        <div className="mx-auto w-12 h-12 bg-gradient-to-br from-primary to-primary/60 rounded-full flex items-center justify-center mb-4 float-animation">
+        <div className="mx-auto w-12 h-12 bg-gradient-to-br from-primary to-primary/60 rounded-full flex items-center justify-center mb-4">
           <Lock className="h-6 w-6 text-white" />
         </div>
         <CardTitle className="text-2xl font-bold text-foreground">
@@ -65,7 +65,7 @@ export const LoginForm = () => {
                 placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="glass-input pl-10"
+                className="bg-input border border-input focus:ring-ring focus:ring-1 pl-10"
               />
             </div>
           </div>
@@ -82,7 +82,7 @@ export const LoginForm = () => {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="glass-input pl-10 pr-10"
+                className="bg-input border border-input focus:ring-ring focus:ring-1 pl-10 pr-10"
               />
               <Button
                 type="button"
@@ -105,7 +105,7 @@ export const LoginForm = () => {
               <input
                 id="remember"
                 type="checkbox"
-                className="w-4 h-4 rounded border-2 border-white/20 bg-white/5 checked:bg-primary"
+                className="w-4 h-4 rounded border border-border bg-background checked:bg-primary"
               />
               <Label htmlFor="remember" className="text-sm text-muted-foreground">
                 Lembrar-me
@@ -118,7 +118,7 @@ export const LoginForm = () => {
           
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-medium"
+            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
             size="lg"
           >
             Entrar
@@ -127,7 +127,7 @@ export const LoginForm = () => {
         
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-white/20"></div>
+            <div className="w-full border-t border-border"></div>
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-background px-2 text-muted-foreground">
@@ -137,11 +137,11 @@ export const LoginForm = () => {
         </div>
         
         <div className="grid grid-cols-2 gap-4">
-          <Button variant="glass" className="w-full">
+          <Button variant="outline" className="w-full">
             <Github className="h-4 w-4 mr-2" />
             GitHub
           </Button>
-          <Button variant="glass" className="w-full">
+          <Button variant="outline" className="w-full">
             <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">
               <path
                 fill="currentColor"

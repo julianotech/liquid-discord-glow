@@ -1,4 +1,3 @@
-import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { Card } from "@/components/ui/card";
 import { User, Lock, Bell, Database, Shield, ChevronRight } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
@@ -6,7 +5,6 @@ import { Switch } from "@/components/ui/switch";
 const Settings = () => {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      <AnimatedBackground />
       
       <main className="relative z-10 p-4 pt-6 pb-24">
         <h1 className="text-2xl font-bold text-foreground mb-6">Configurações</h1>
@@ -15,7 +13,7 @@ const Settings = () => {
         <div className="mb-8">
           <h2 className="text-xl font-bold text-foreground mb-4">Minha Conta</h2>
           <div className="space-y-3">
-            <Card className="glass-card p-4 cursor-pointer hover:bg-white/10 transition-all">
+            <Card className="bg-card rounded-lg border border-border shadow-md p-4 cursor-pointer hover:bg-white/10 transition-all">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
                   <User className="w-6 h-6 text-primary" />
@@ -28,7 +26,7 @@ const Settings = () => {
               </div>
             </Card>
 
-            <Card className="glass-card p-4 cursor-pointer hover:bg-white/10 transition-all">
+            <Card className="bg-card rounded-lg border border-border shadow-md p-4 cursor-pointer hover:bg-white/10 transition-all">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
                   <Lock className="w-6 h-6 text-primary" />
@@ -46,7 +44,7 @@ const Settings = () => {
         {/* Notifications Section */}
         <div className="mb-8">
           <h2 className="text-xl font-bold text-foreground mb-4">Notificações</h2>
-          <Card className="glass-card p-4">
+          <Card className="bg-card rounded-lg border border-border shadow-md p-4">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
                 <Bell className="w-6 h-6 text-primary" />
@@ -64,7 +62,7 @@ const Settings = () => {
         <div className="mb-8">
           <h2 className="text-xl font-bold text-foreground mb-4">Privacidade e Segurança</h2>
           <div className="space-y-3">
-            <Card className="glass-card p-4 cursor-pointer hover:bg-white/10 transition-all">
+            <Card className="bg-card rounded-lg border border-border shadow-md p-4 cursor-pointer hover:bg-white/10 transition-all">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
                   <Database className="w-6 h-6 text-primary" />
@@ -77,7 +75,7 @@ const Settings = () => {
               </div>
             </Card>
 
-            <Card className="glass-card p-4 cursor-pointer hover:bg-white/10 transition-all">
+            <Card className="bg-card rounded-lg border border-border shadow-md p-4 cursor-pointer hover:bg-white/10 transition-all">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
                   <Shield className="w-6 h-6 text-primary" />
@@ -95,7 +93,7 @@ const Settings = () => {
         {/* Appearance Section */}
         <div className="mb-8">
           <h2 className="text-xl font-bold text-foreground mb-4">Aparência</h2>
-          <Card className="glass-card p-4">
+          <Card className="bg-card rounded-lg border border-border shadow-md p-4">
             <p className="text-muted-foreground text-sm text-center">Opções de tema em breve</p>
           </Card>
         </div>

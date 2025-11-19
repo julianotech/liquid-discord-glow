@@ -25,7 +25,7 @@ export const EditCategoryDialog = ({ open, onOpenChange, categoryName, currentGo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="glass-card border-white/10">
+      <DialogContent className="bg-card rounded-lg border border-border shadow-md">
         <DialogHeader>
           <DialogTitle className="text-foreground">Editar Categoria</DialogTitle>
         </DialogHeader>
@@ -36,7 +36,7 @@ export const EditCategoryDialog = ({ open, onOpenChange, categoryName, currentGo
             <Input
               value={categoryName}
               disabled
-              className="glass-input"
+              className="bg-input border border-input focus:ring-ring focus:ring-1"
             />
           </div>
 
@@ -47,7 +47,7 @@ export const EditCategoryDialog = ({ open, onOpenChange, categoryName, currentGo
               placeholder="0.00"
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
-              className="glass-input"
+              className="bg-input border border-input focus:ring-ring focus:ring-1"
               step="0.01"
               min="0"
             />
