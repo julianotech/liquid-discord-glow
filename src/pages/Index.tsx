@@ -1,4 +1,3 @@
-import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { LoginForm } from "@/components/LoginForm";
 
 const Index = () => {
