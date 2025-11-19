@@ -1,4 +1,5 @@
 import AddTransactionDrawer from "@/components/AddTransactionDrawer";
+import { AddCategoryDialog } from "@/components/AddCategoryDialog";
 import { EditCategoryDialog } from "@/components/EditCategoryDialog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -11,6 +12,7 @@ const Categories = () => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [addCategoryOpen, setAddCategoryOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedType, setSelectedType] = useState<"expense" | "income">("expense");
   
@@ -172,10 +174,7 @@ const Categories = () => {
 
         {/* Add Category Button */}
         <Button 
-          onClick={() => {
-            setSelectedCategory("");
-            setDrawerOpen(true);
-          }}
+          onClick={() => setAddCategoryOpen(true)}
           className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg z-50"
         >
           <Plus className="w-6 h-6" />
@@ -187,6 +186,15 @@ const Categories = () => {
         onOpenChange={setDrawerOpen}
         defaultCategory={selectedCategory}
         defaultType={selectedType}
+      />
+
+      <AddCategoryDialog
+        open={addCategoryOpen}
+        onOpenChange={setAddCategoryOpen}
+        onCategoryAdded={() => {
+          // TODO: Refresh categories list
+          console.log("Category added, should refresh list");
+        }}
       />
 
       <EditCategoryDialog
