@@ -5,6 +5,7 @@ export interface Transaction {
   amount: number;
   description?: string;
   date: Date;
+  icon: string;
   createdAt: Date;
 }
 
@@ -21,3 +22,10 @@ export interface Category {
   bgColor: string | null;
   userCreated: string;
 }
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+  hasMore?: boolean;
+  total?: number
+};

@@ -1,4 +1,5 @@
 import { API_URL } from "./routes";
+import { K } from "./types";
 
 export class ApiError extends Error {
   constructor(
@@ -11,13 +12,19 @@ export class ApiError extends Error {
   }
 }
 
+type ReqMethods = 'GET' | 'POST' | 'PUT' | 'DELETE'
+interface ReqInfo {
+  method?: ReqMethods
+  queryParams?: Record<string, string | number>
+  body?: string
+}
+
 async function apiClient<T>(
   endpoint: string,
-  options?: RequestInit
-): Promise<{ success: boolean; data: T; message?: string }> {
+  options?: RequestInit & ReqInfo
+): Promise<K<T>> {
   const token = localStorage.getItem("adminToken");
 
-  // Não incluir Content-Type em requisições DELETE ou GET sem body
   const headers: Record<string, string> = {};
 
   if (token) {
@@ -37,9 +44,24 @@ async function apiClient<T>(
     ...options,
     headers,
   };
+  let finalEndpoint = endpoint;
+  if (options?.queryParams) {
+    const searchParams = new URLSearchParams();
+    Object.entries(options.queryParams).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        searchParams.append(key, String(value));
+      }
+    });
+
+    const queryString = searchParams.toString();
+
+    if (queryString) {
+      finalEndpoint += (finalEndpoint.includes('?') ? '&' : '?') + queryString;
+    }
+  }
 
   try {
-    const response = await fetch(`${API_URL}${endpoint}`, config);
+    const response = await fetch(`${API_URL}${finalEndpoint}`, config);
     const data = await response.json();
 
     if (!response.ok) {

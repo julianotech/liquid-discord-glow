@@ -8,7 +8,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginMutation = useLogin();
   const logoutMutation = useLogout();
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<void> => {
     await loginMutation.mutateAsync({ email, password });
   };
 

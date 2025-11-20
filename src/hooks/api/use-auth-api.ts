@@ -32,7 +32,6 @@ export function useLogin() {
         method: "POST",
         body: JSON.stringify(credentials),
       });
-      console.log({ response })
       return response.data;
     },
     onSuccess: (data): void => {

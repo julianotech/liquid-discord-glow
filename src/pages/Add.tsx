@@ -8,8 +8,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
 import { transactionsAPI } from "@/lib/api";
+import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ArrowDownCircle, ArrowUpCircle, CalendarIcon } from "lucide-react";
 import { useState } from "react";
@@ -28,7 +28,7 @@ const incomeCategories = [
   "Outros",
 ];
 
-const Add = () => {
+const Add = (): JSX.Element => {
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
   const [type, setType] = useState<"expense" | "income">("expense");
   const [category, setCategory] = useState("");
@@ -39,7 +39,7 @@ const Add = () => {
 
   const categories = type === "expense" ? expenseCategories : incomeCategories;
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (!category || !amount) {
       toast({
         title: "Erro",
@@ -92,7 +92,7 @@ const Add = () => {
         {/* Type Selection with Radio Buttons */}
         <div className="bg-card/50 backdrop-blur-md border border-border/50 rounded-lg p-6 space-y-3">
           <Label className="text-foreground font-medium">Tipo de Transação</Label>
-          <RadioGroup value={type} onValueChange={(value: "expense" | "income") => {
+          <RadioGroup value={type} onValueChange={(value: "expense" | "income"): void => {
             setType(value);
             setCategory("");
           }}>
@@ -217,16 +217,16 @@ const Add = () => {
 
         {/* Action Buttons */}
         <div className="space-y-3">
-          <Button 
-            onClick={handleSubmit} 
+          <Button
+            onClick={handleSubmit}
             className="w-full h-12 text-base font-medium"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Adicionando..." : "Adicionar Transação"}
           </Button>
-          <Button 
-            onClick={() => setIsCategoryDialogOpen(true)} 
-            variant="outline" 
+          <Button
+            onClick={() => setIsCategoryDialogOpen(true)}
+            variant="outline"
             className="w-full h-12 text-base font-medium"
           >
             Gerenciar Categorias
