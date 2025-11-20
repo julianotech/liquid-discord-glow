@@ -1,22 +1,25 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, EyeOff, Mail, Lock, Github } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const LoginForm = () => {
+export const LoginForm = (): JSX.Element => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { toast } = useToast();
+  // const [_isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast({
         title: "Erro de validação",
@@ -25,16 +28,25 @@ export const LoginForm = () => {
       });
       return;
     }
+    // setIsLoading(true);
+    try {
+      await login(email, password);
 
-    // Simulação de login
-    toast({
-      title: "🎉 Login realizado com sucesso!",
-      description: "Redirecionando para o dashboard...",
-      variant: "default",
-      className: "border-primary/30",
-    });
-    
-    setTimeout(() => navigate('/dashboard'), 1000);
+      toast({
+        title: "Login realizado!",
+        description: "Bem-vindo ao painel administrativo",
+      });
+
+      navigate("/");
+    } catch (error) {
+      toast({
+        title: "Erro ao fazer login",
+        description: error instanceof Error ? error.message : "Credenciais inválidas",
+        variant: "destructive",
+      });
+    } finally {
+      // setIsLoading(false);
+    }
   };
 
   return (
@@ -50,7 +62,7 @@ export const LoginForm = () => {
           Entre com suas credenciais para acessar sua conta
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -64,12 +76,12 @@ export const LoginForm = () => {
                 type="email"
                 placeholder="seu@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e): void => setEmail(e.target.value)}
                 className="bg-input border border-input focus:ring-ring focus:ring-1 pl-10"
               />
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="password" className="text-foreground">
               Senha
@@ -99,7 +111,7 @@ export const LoginForm = () => {
               </Button>
             </div>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <input
@@ -115,7 +127,7 @@ export const LoginForm = () => {
               Esqueceu a senha?
             </Button>
           </div>
-          
+
           <Button
             type="submit"
             className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
@@ -124,7 +136,7 @@ export const LoginForm = () => {
             Entrar
           </Button>
         </form>
-        
+
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-border"></div>
@@ -135,13 +147,13 @@ export const LoginForm = () => {
             </span>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-2 gap-4">
-          <Button variant="outline" className="w-full">
+          {/* <Button variant="outline" className="w-full">
             <Github className="h-4 w-4 mr-2" />
             GitHub
-          </Button>
-          <Button variant="outline" className="w-full">
+          </Button> */}
+          {/* <Button variant="outline" className="w-full">
             <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
@@ -161,15 +173,15 @@ export const LoginForm = () => {
               />
             </svg>
             Google
-          </Button>
+          </Button> */}
         </div>
-        
-        <div className="text-center text-sm text-muted-foreground">
+
+        {/* <div className="text-center text-sm text-muted-foreground">
           Não tem uma conta?{" "}
           <Button variant="link" className="text-primary">
             Registre-se
           </Button>
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );

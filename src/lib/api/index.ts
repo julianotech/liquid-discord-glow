@@ -1,23 +1,6 @@
 // API integration for transactions and categories
 
-export interface Transaction {
-  id: string;
-  type: "expense" | "income";
-  category: string;
-  amount: number;
-  description?: string;
-  date: Date;
-  createdAt: Date;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  type: "expense" | "income";
-  goal?: number;
-  spent?: number;
-  icon?: string;
-}
+import { Category, Transaction } from "./types";
 
 // Transactions API
 export const transactionsAPI = {

@@ -7,7 +7,7 @@ export const BottomNav = (): JSX.Element => {
   const location = useLocation();
 
   const navItems = [
-    { path: '/dashboard', label: 'Visão Geral', icon: Home },
+    { path: '/', label: 'Visão Geral', icon: Home },
     { path: '/add', label: 'Adicionar', icon: Plus },
     { path: '/history', label: 'Histórico', icon: History },
     { path: '/categories', label: 'Categorias', icon: LayoutGrid },
