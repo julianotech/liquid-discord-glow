@@ -29,3 +29,5 @@ export interface ApiResponse<T> {
   hasMore?: boolean;
   total?: number
 };
+
+export type K<T> = ApiResponse<T>;

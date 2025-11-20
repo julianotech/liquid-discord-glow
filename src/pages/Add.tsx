@@ -57,6 +57,7 @@ const Add = (): JSX.Element => {
         amount: parseFloat(amount),
         description,
         date,
+        icon: "DollarSign",
       });
 
       toast({
