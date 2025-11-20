@@ -6,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import { categoriesAPI } from "@/lib/api";
 import { useState } from "react";
+import { IconPicker } from "./IconPicker";
+import { ColorPicker } from "./ColorPicker";
 
 interface AddCategoryDialogProps {
   open: boolean;
@@ -17,6 +19,9 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
   const [categoryName, setCategoryName] = useState("");
   const [categoryType, setCategoryType] = useState<"expense" | "income">("expense");
   const [goal, setGoal] = useState<string>("");
+  const [icon, setIcon] = useState<string>("ShoppingCart");
+  const [iconColor, setIconColor] = useState<string>("#ffffff");
+  const [bgColor, setBgColor] = useState<string>("#3b82f6");
 
   const handleSave = async () => {
     if (!categoryName) {
@@ -30,9 +35,16 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
 
     try {
       await categoriesAPI.create({
-        name: categoryName,
-        type: categoryType,
-        goal: goal ? parseFloat(goal) : undefined,
+        title: categoryName,
+        type: categoryType === "income",
+        goal: goal || null,
+        icon,
+        iconColor,
+        bgColor,
+        spent: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        userCreated: "current-user",
       });
 
       toast({
@@ -42,6 +54,9 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
       
       setCategoryName("");
       setGoal("");
+      setIcon("ShoppingCart");
+      setIconColor("#ffffff");
+      setBgColor("#3b82f6");
       onCategoryAdded?.();
       onOpenChange(false);
     } catch (error) {
@@ -82,6 +97,30 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
               onChange={(e) => setCategoryName(e.target.value)}
               className="bg-input border border-input focus:ring-ring focus:ring-1"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-foreground">Ícone</Label>
+            <div className="flex items-center gap-4">
+              <IconPicker 
+                value={icon} 
+                onChange={setIcon}
+                iconColor={iconColor}
+                bgColor={bgColor}
+              />
+              <div className="flex-1 space-y-3">
+                <ColorPicker
+                  label="Cor do Ícone"
+                  value={iconColor}
+                  onChange={setIconColor}
+                />
+                <ColorPicker
+                  label="Cor de Fundo"
+                  value={bgColor}
+                  onChange={setBgColor}
+                />
+              </div>
+            </div>
           </div>
 
           {categoryType === "expense" && (

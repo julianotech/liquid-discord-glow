@@ -63,10 +63,10 @@ export function useDeleteUser() {
 
   return useMutation({
     mutationFn: async (userId: string): Promise<Response> => {
-      const response = await apiClient(`${API_ENDPOINTS.users}/${userId}`, {
+      const response = await apiClient<AdminUser>(`${API_ENDPOINTS.users}/${userId}`, {
         method: "DELETE",
       });
-      return response;
+      return response as Response;
     },
     onSuccess: (): void => {
       // Invalidar a lista de usuários para recarregar
