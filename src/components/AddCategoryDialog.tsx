@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { categoriesAPI } from "@/lib/api";
 import { useState } from "react";
 import { IconPicker } from "./IconPicker";
 import { ColorPicker } from "./ColorPicker";
+import { ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 
 interface AddCategoryDialogProps {
   open: boolean;
@@ -78,15 +78,43 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label className="text-foreground">Tipo</Label>
-            <Select value={categoryType} onValueChange={(value: "expense" | "income") => setCategoryType(value)}>
-              <SelectTrigger className="bg-input border border-input focus:ring-ring focus:ring-1 pointer-events-auto">
-                <SelectValue placeholder="Selecionar tipo" />
-              </SelectTrigger>
-              <SelectContent className="pointer-events-auto">
-                <SelectItem value="expense">Despesa</SelectItem>
-                <SelectItem value="income">Receita</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setCategoryType("expense")}
+                className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
+                  categoryType === "expense"
+                    ? "border-red-500 bg-red-500/10"
+                    : "border-border bg-card/50 hover:border-border/80"
+                }`}
+              >
+                <ArrowDownCircle 
+                  className={categoryType === "expense" ? "text-red-500" : "text-muted-foreground"} 
+                  size={24} 
+                />
+                <span className={categoryType === "expense" ? "text-red-500 font-medium" : "text-foreground"}>
+                  Despesa
+                </span>
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => setCategoryType("income")}
+                className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
+                  categoryType === "income"
+                    ? "border-green-500 bg-green-500/10"
+                    : "border-border bg-card/50 hover:border-border/80"
+                }`}
+              >
+                <ArrowUpCircle 
+                  className={categoryType === "income" ? "text-green-500" : "text-muted-foreground"} 
+                  size={24} 
+                />
+                <span className={categoryType === "income" ? "text-green-500 font-medium" : "text-foreground"}>
+                  Receita
+                </span>
+              </button>
+            </div>
           </div>
           
           <div className="space-y-2">
