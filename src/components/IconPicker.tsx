@@ -41,17 +41,17 @@ export const IconPicker = ({ value, onChange, iconColor = "#ffffff", bgColor = "
             {availableIcons.map((iconName) => {
               const Icon = (Icons as any)[iconName];
               return (
-                <Button
-                  key={iconName}
-                  variant="ghost"
-                  className="w-12 h-12 p-0 hover:bg-accent"
-                  onClick={() => {
-                    onChange(iconName);
-                    setOpen(false);
-                  }}
-                >
-                  <Icon size={24} className="text-foreground" />
-                </Button>
+              <Button
+                key={iconName}
+                variant="ghost"
+                className="w-12 h-12 p-0 hover:bg-accent hover:ring-2 hover:ring-primary transition-all duration-200"
+                onClick={() => {
+                  onChange(iconName);
+                  setOpen(false);
+                }}
+              >
+                <Icon size={24} className="text-foreground" />
+              </Button>
               );
             })}
           </div>
