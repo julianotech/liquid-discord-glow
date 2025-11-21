@@ -10,12 +10,6 @@ export interface CreateTransactionData {
   date: Date
 
 }
-  //         amount: z.string().min(1, "Amount is required"),
-  // description: z.string().min(1, "Description is required"),
-  // date: z.string().refine((val: string): boolean => !isNaN(Date.parse(val)), {
-  //   message: "Date must be a valid date",
-  // }).transform((value: string): Date => new Date(value)),
-
 // Interface para dados de atualização
 export type UpdateTransactionData = Partial<CreateTransactionData>;
 

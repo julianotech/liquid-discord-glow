@@ -1,11 +1,11 @@
 import { AddCategoryDialog } from "@/components/AddCategoryDialog";
+import { SelectCategory } from "@/components/SelectCategory";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useCategories } from "@/hooks/api/use-categories-api";
 import { useCreateTransaction } from "@/hooks/api/use-transactions-api";
@@ -162,19 +162,8 @@ const Add = (): JSX.Element => {
         {/* Form Fields */}
         <div className="bg-card/50 backdrop-blur-md border border-border/50 rounded-lg p-6 space-y-4">
           {/* Category Selection */}
-          <div className="space-y-2">
-            <Label className="text-foreground">Categoria *</Label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="bg-input/50 backdrop-blur-sm border border-input focus:ring-ring focus:ring-1">
-                <SelectValue placeholder="Selecione uma categoria" />
-              </SelectTrigger>
-              <SelectContent>
-                {(type === 'income' ? incomeCategories : expenseCategories).map((cat): JSX.Element => (
-                  <SelectItem key={cat.id} value={cat.id}>{cat.title}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <SelectCategory type={type} emitCategory={(value: string): void => setCategory(value)} />
+
 
           {/* Amount */}
           <div className="space-y-2">

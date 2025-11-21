@@ -3,11 +3,7 @@ import { API_ENDPOINTS } from "@/lib/api/routes";
 import { Category } from "@/lib/api/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-
-
 // Interface para o objeto de Campanha retornado pela API
-
-
 export interface CreateCategoryData {
   title: string;
   type: boolean;
@@ -24,12 +20,14 @@ export type UpdateCategoryData = Partial<CreateCategoryData>;
 // --- Hooks Principais para Categorias ---
 
 // Hook para buscar todas as categorias
-export function useCategories() {
+export function useCategories(queryParams: Record<string, string | number | undefined> = {}) {
   return useQuery({
-    queryKey: ["categories"],
+    queryKey: ["categories", queryParams],
     queryFn: async (): Promise<Category[]> => {
       // Usando o endpoint de categorias
-      const response = await apiClient<Category[]>(API_ENDPOINTS.categories);
+      const response = await apiClient<Category[]>(API_ENDPOINTS.categories, {
+        queryParams
+      });
       return response.data;
     },
   });
