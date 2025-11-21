@@ -12,7 +12,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await loginMutation.mutateAsync({ email, password });
   };
 
-  const logout = () => {
+  const logout = (): void => {
     logoutMutation.mutate();
   };
 

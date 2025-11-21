@@ -5,7 +5,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export interface CreateTransactionData {
   description: string
+  categoryId: string
+  amount: string
+  date: Date
+
 }
+  //         amount: z.string().min(1, "Amount is required"),
+  // description: z.string().min(1, "Description is required"),
+  // date: z.string().refine((val: string): boolean => !isNaN(Date.parse(val)), {
+  //   message: "Date must be a valid date",
+  // }).transform((value: string): Date => new Date(value)),
 
 // Interface para dados de atualização
 export type UpdateTransactionData = Partial<CreateTransactionData>;
@@ -13,7 +22,7 @@ export type UpdateTransactionData = Partial<CreateTransactionData>;
 // --- Hooks Principais para Transações ---
 
 // Hook para buscar todas as transações
-export function useTransactions(queryParams: Record<string, string | number> = {}) {
+export function useTransactions(queryParams: Record<string, string | number | undefined> = {}) {
   // 🎯 TIPAGEM: useQuery<Tipo do dado no cache, Tipo do erro, Tipo do dado que você quer usar>
   return useQuery<ApiResponse<Transaction[]>, Error, ApiResponse<Transaction[]>>({
     queryKey: ["transactions", queryParams],

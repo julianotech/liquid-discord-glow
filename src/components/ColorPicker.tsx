@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { memo, useState } from "react";
 
 const colorPalette = [
   "#ef4444", "#f59e0b", "#eab308", "#84cc16", "#22c55e", "#10b981",
@@ -15,7 +15,7 @@ interface ColorPickerProps {
   label: string;
 }
 
-export const ColorPicker = ({ value, onChange, label }: ColorPickerProps) => {
+export const ColorPicker = memo(({ value, onChange, label }: ColorPickerProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -38,7 +38,8 @@ export const ColorPicker = ({ value, onChange, label }: ColorPickerProps) => {
                 key={color}
                 className="w-8 h-8 rounded-md border-2 border-border hover:scale-110 transition-transform"
                 style={{ backgroundColor: color }}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   onChange(color);
                   setOpen(false);
                 }}
@@ -49,4 +50,4 @@ export const ColorPicker = ({ value, onChange, label }: ColorPickerProps) => {
       </Popover>
     </div>
   );
-};
+});

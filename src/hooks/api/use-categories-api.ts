@@ -9,15 +9,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 export interface CreateCategoryData {
-  createdAt: Date;
-  updatedAt: Date;
   title: string;
   type: boolean;
   goal?: string | null;
   icon?: string | null;
   iconColor?: string | null;
   bgColor?: string | null;
-  userCreated: string;
+  userCreated?: string;
 }
 
 // Interface para dados de atualização
@@ -63,7 +61,7 @@ export function useCreateCategory() {
       });
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (): void => {
       // Invalidar a lista de categorias para recarregar
       queryClient.invalidateQueries({ queryKey: ["categories"] });
     },

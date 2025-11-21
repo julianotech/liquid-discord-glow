@@ -1,29 +1,19 @@
 import { Category } from "@/lib/api/types";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { ChevronRight, Pencil } from "lucide-react";
 import { Icons } from "./Icons";
+import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 
 type Type = "expense" | "income"
 
-export default function CategoryItem({ categories, title, type }: { categories: Category[], title: string, type: Type }): JSX.Element {
-  const [_selectedType, setSelectedType] = useState<Type>("expense");
-  const [_drawerOpen, setDrawerOpen] = useState(false);
-  const [_dialogOpen, setDialogOpen] = useState(false);
-
-  const [_selectedCategory, setSelectedCategory] = useState<string>("");
-
-  const ChevronRight = Icons.ChevronRight;
-
-  const handleCategoryClick = (categoryName: string, type: Type): void => {
-    setSelectedCategory(categoryName);
-    setSelectedType(type);
-    setDrawerOpen(true);
-  };
-  const handleCategoryLongPress = (categoryName: string): void => {
-    setSelectedCategory(categoryName);
-    setDialogOpen(true);
-  };
+export default function CategoryItem({
+  categories,
+  title,
+  type,
+  onEditCategory,
+  whenClick
+}: { categories: Category[], title: string, type: Type, onEditCategory: (category: Category) => void, whenClick: (categoryId: string) => void }): JSX.Element {
   const isExpense = type === 'expense'
 
   const checkGoalExceeded = (category: Category): boolean => {
@@ -67,6 +57,8 @@ export default function CategoryItem({ categories, title, type }: { categories: 
         const IconComponent = Icons[category.icon];
         const Icon = IconComponent || Icons.AlertTriangle;
         const isOverGoal = checkGoalExceeded(category);
+        const bgIsColor = typeof category.bgColor === "string" && (category.bgColor.startsWith("#") || category.bgColor.startsWith("rgb"));
+        const iconIsColor = typeof category.iconColor === "string" && (category.iconColor.startsWith("#") || category.iconColor.startsWith("rgb"));
         return (
           <Card
             key={category.id}
@@ -74,26 +66,33 @@ export default function CategoryItem({ categories, title, type }: { categories: 
               "glass-card p-4 cursor-pointer hover:bg-white/10 transition-all",
               getBorder(isOverGoal)
             )}
-            onClick={(): void => handleCategoryClick(category.title, category.type ? "income" : "expense")}
-            onContextMenu={(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
-              e.preventDefault();
-              handleCategoryLongPress(category.title);
-            }}
-            onTouchStart={(e: React.TouchEvent<HTMLDivElement> & { currentTarget: { touchTimer?: NodeJS.Timeout } }): void => {
-              const touchTimer = setTimeout((): void => {
-                handleCategoryLongPress(category.title);
-              }, 500);
-              e.currentTarget.touchTimer = touchTimer;
-            }}
-            onTouchEnd={(e: React.TouchEvent<HTMLDivElement> & { currentTarget: { touchTimer?: NodeJS.Timeout } }): void => {
-              if (e.currentTarget.touchTimer) {
-                clearTimeout(e.currentTarget.touchTimer);
-              }
-            }}
+            onClick={(): void => whenClick(category.id)}
+          // onContextMenu={(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
+          //   e.preventDefault();
+          // }}
+          // onTouchStart={(e: React.TouchEvent<HTMLDivElement> & { currentTarget: { touchTimer?: NodeJS.Timeout } }): void => {
+          //   const touchTimer = setTimeout((): void => {
+          //   }, 500);
+          //   e.currentTarget.touchTimer = touchTimer;
+          // }}
+          // onTouchEnd={(e: React.TouchEvent<HTMLDivElement> & { currentTarget: { touchTimer?: NodeJS.Timeout } }): void => {
+          //   if (e.currentTarget.touchTimer) {
+          //     clearTimeout(e.currentTarget.touchTimer);
+          //   }
+          // }}
           >
             <div className="flex items-center gap-4">
-              <div className={`w-12 h-12 rounded-full ${category.bgColor} flex items-center justify-center`}>
-                <Icon className={`w-6 h-6 ${category.iconColor}`} />
+              <div
+                className={cn(
+                  "w-12 h-12 rounded-full flex items-center justify-center",
+                  bgIsColor ? undefined : category.bgColor
+                )}
+                style={bgIsColor ? { backgroundColor: category.bgColor } : undefined}
+              >
+                <Icon
+                  className={cn("w-6 h-6", iconIsColor ? undefined : category.iconColor)}
+                  style={iconIsColor ? { color: category.iconColor } : undefined}
+                />
               </div>
               <div className="flex-1">
                 <p className="font-medium text-foreground flex-1">{category.title}</p>
@@ -115,6 +114,12 @@ export default function CategoryItem({ categories, title, type }: { categories: 
                   </div>
                 )}
               </div>
+              <Button variant="ghost" size="icon" onClick={(e) => {
+                e.stopPropagation(); // Previne o clique na Card de abrir o drawer
+                onEditCategory(category);
+              }}>
+                <Pencil className="w-5 h-5 text-muted-foreground" />
+              </Button>
               <ChevronRight className="w-5 h-5 text-muted-foreground" />
             </div>
             {isOverGoal && <Message />}

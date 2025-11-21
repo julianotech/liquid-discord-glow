@@ -2,10 +2,10 @@ import { Icons } from "@/components/Icons";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useState } from "react";
+import { memo, useState } from "react";
 
 const availableIcons = [
-  "ShoppingCart", "Coffee", "Utensils", "Home", "Car", "Bus", "Plane", 
+  "ShoppingCart", "Coffee", "Utensils", "Home", "Car", "Bus", "Plane",
   "Bike", "Heart", "Gamepad", "Music", "Book", "GraduationCap", "Briefcase",
   "DollarSign", "TrendingUp", "Gift", "Smartphone", "Laptop", "Tv",
   "Shirt", "Baby", "Dog", "Cat", "Pill", "Dumbbell", "Pizza", "Wine",
@@ -19,16 +19,16 @@ interface IconPickerProps {
   bgColor?: string;
 }
 
-export const IconPicker = ({ value, onChange, iconColor = "#ffffff", bgColor = "#3b82f6" }: IconPickerProps) => {
+export const IconPicker = memo(({ value, onChange, iconColor = "#ffffff", bgColor = "#3b82f6" }: IconPickerProps) => {
   const [open, setOpen] = useState(false);
-  
+
   const IconComponent = (Icons as any)[value] || Icons.HelpCircle;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           className="w-16 h-16 p-0 border-2"
           style={{ backgroundColor: bgColor }}
         >
@@ -41,17 +41,17 @@ export const IconPicker = ({ value, onChange, iconColor = "#ffffff", bgColor = "
             {availableIcons.map((iconName) => {
               const Icon = (Icons as any)[iconName];
               return (
-              <Button
-                key={iconName}
-                variant="ghost"
-                className="w-12 h-12 p-0 hover:bg-accent hover:ring-2 hover:ring-primary transition-all duration-200"
-                onClick={() => {
-                  onChange(iconName);
-                  setOpen(false);
-                }}
-              >
-                <Icon size={24} className="text-foreground" />
-              </Button>
+                <Button
+                  key={iconName}
+                  variant="ghost"
+                  className="w-12 h-12 p-0 hover:bg-accent hover:ring-2 hover:ring-primary transition-all duration-200"
+                  onClick={(): void => {
+                    onChange(iconName);
+                    setOpen(false);
+                  }}
+                >
+                  <Icon size={24} className="text-foreground" />
+                </Button>
               );
             })}
           </div>
@@ -59,4 +59,4 @@ export const IconPicker = ({ value, onChange, iconColor = "#ffffff", bgColor = "
       </PopoverContent>
     </Popover>
   );
-};
+});

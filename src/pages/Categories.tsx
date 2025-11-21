@@ -1,25 +1,47 @@
 import { AddCategoryDialog } from "@/components/AddCategoryDialog";
-import AddTransactionDrawer from "@/components/AddTransactionDrawer";
 import CategoryItem from "@/components/CategoryItem";
 import { EditCategoryDialog } from "@/components/EditCategoryDialog";
 import { Icons } from "@/components/Icons";
 import { Button } from "@/components/ui/button";
-import { useCategories } from "@/hooks/api/use-categories-api";
+import { toast } from "@/components/ui/use-toast";
+import { useCategories, useUpdateCategory } from "@/hooks/api/use-categories-api";
 import { Category } from "@/lib/api/types";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Categories = (): JSX.Element => {
   const navigate = useNavigate();
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [addCategoryOpen, setAddCategoryOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [selectedType, setSelectedType] = useState<"expense" | "income">("expense");
+  const [selectedCategory, setSelectedCategory] = useState<Category | undefined>(undefined);
 
   const expenseCategories: Category[] = [];
   const incomeCategories: Category[] = [];
-  const { data: categories = [] } = useCategories();
+  const { data: categories = [], refetch: refetchCategories } = useCategories();
+  const updateCategoryMutation = useUpdateCategory();
+
+  const handleUpdateCategory = async (updatedIcon: string, updatedColor: string, updatedGoal?: number) => {
+    if (selectedCategory) {
+      try {
+        await updateCategoryMutation.mutateAsync({
+          id: selectedCategory.id,
+          data: { ...selectedCategory, icon: updatedIcon, bgColor: updatedColor, goal: updatedGoal ? String(updatedGoal) : null },
+        });
+        toast({
+          title: "Categoria atualizada",
+          description: `A categoria '${selectedCategory.title}' foi atualizada com sucesso.`,
+        });
+        refetchCategories();
+        setDialogOpen(false);
+      } catch (error) {
+        toast({
+          title: "Erro",
+          description: "Não foi possível atualizar a categoria.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   for (const category of categories) {
     if (category.type) {
@@ -30,23 +52,7 @@ const Categories = (): JSX.Element => {
   }
 
   const ArrowLeft = Icons.ArrowLeft;
-  const ChevronRight = Icons.ChevronRight;
   const Plus = Icons.Plus;
-
-  const handleCategoryClick = (categoryName: string, type: "expense" | "income"): void => {
-    setSelectedCategory(categoryName);
-    setSelectedType(type);
-    setDrawerOpen(true);
-  };
-
-  const handleCategoryLongPress = (categoryName: string): void => {
-    setSelectedCategory(categoryName);
-    setDialogOpen(true);
-  };
-
-  const checkGoalExceeded = (category: Category): boolean => {
-    return category.goal && category.spent > Number(category.goal);
-  };
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -67,9 +73,27 @@ const Categories = (): JSX.Element => {
         </div>
 
         {/* Expense Categories */}
-        <CategoryItem categories={expenseCategories} title={"Gastos"} type={'expense'} />
+        <CategoryItem
+          title={"Gastos"}
+          type={'expense'}
+          categories={expenseCategories}
+
+          whenClick={(categoryId: string) => navigate(`/history?categoryId=${categoryId}`)}
+          onEditCategory={(category: Category): void => {
+            setSelectedCategory(category);
+            setDialogOpen(true);
+          }}
+        />
         {/* Income Categories */}
-        <CategoryItem categories={incomeCategories} title={"Ganhos"} type={'income'} />
+        <CategoryItem
+          title={"Ganhos"}
+          type={'income'}
+          whenClick={(categoryId: string) => navigate(`/history?categoryId=${categoryId}`)}
+          categories={incomeCategories}
+          onEditCategory={(category) => {
+            setSelectedCategory(category);
+            setDialogOpen(true);
+          }} />
 
         {/* Add Category Button */}
         <Button
@@ -80,27 +104,26 @@ const Categories = (): JSX.Element => {
         </Button>
       </main >
 
-      <AddTransactionDrawer
-        open={drawerOpen}
-        onOpenChange={setDrawerOpen}
-        defaultCategory={selectedCategory}
-        defaultType={selectedType}
-      />
-
       <AddCategoryDialog
         open={addCategoryOpen}
         onOpenChange={setAddCategoryOpen}
-        onCategoryAdded={() => {
+        onCategoryAdded={(): void => {
           // TODO: Refresh categories list
           console.log("Category added, should refresh list");
         }}
       />
 
-      <EditCategoryDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        categoryName={selectedCategory}
-      />
+      {selectedCategory && (
+        <EditCategoryDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          categoryName={selectedCategory.title}
+          currentGoal={Number(selectedCategory.goal) || undefined}
+          selectedIcon={selectedCategory.icon || ""}
+          selectedColor={selectedCategory.bgColor || ""}
+          onSave={handleUpdateCategory}
+        />
+      )}
     </div >
   );
 };

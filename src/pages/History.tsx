@@ -1,18 +1,34 @@
 import { TransactionItem } from "@/components/TransactionItem";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useCategories } from "@/hooks/api/use-categories-api";
 import { useTransactions } from "@/hooks/api/use-transactions-api";
-import { Plus, Search } from "lucide-react";
-import { useState } from "react";
+import { Category } from "@/lib/api/types";
+import { Filter, Plus, Search, XCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const History = (): JSX.Element => {
-  // const [startDate, setStartDate] = useState<Date>();
-  // const [endDate, setEndDate] = useState<Date>();
-  const [limit, setLimit] = useState<number>(1)
-  // const { data: transactions = [], hasMore } = useTransactions({ limit });
-  const { data, isLoading } = useTransactions({ limit });
+  const [search, updateSearch] = useState<string>('');
+  const [limit, setLimit] = useState<number>(6)
+  const [searchParams] = useSearchParams();
+  const categoryIdFromUrl = searchParams.get('categoryId');
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(categoryIdFromUrl || undefined);
+  const { data: categories = [] } = useCategories();
+  const { data, isLoading, refetch } = useTransactions({ limit, search, categoryId: selectedCategoryId });
   const transactions = data?.data || [];
-  const hasMore = data?.hasMore; // Agora 'hasMore' é acessível
-  // const total = data?.total;
+  const hasMore = data?.hasMore
+
+  useEffect(() => {
+    if (categoryIdFromUrl) {
+      setSelectedCategoryId(categoryIdFromUrl);
+    }
+  }, [categoryIdFromUrl]);
+
+  useEffect(() => {
+    refetch();
+  }, [search, selectedCategoryId]);
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -23,9 +39,56 @@ const History = (): JSX.Element => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
               placeholder="Pesquisar"
-              className="bg-input border border-input focus:ring-ring focus:ring-1 pl-10"
+              value={search}
+              className="bg-input border border-input focus:ring-ring focus:ring-1 pl-10 pr-10"
+              onChange={(e) => updateSearch(e.target.value)}
             />
+            {search && (
+              <button
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                onClick={() => {
+                  updateSearch("");
+                  refetch();
+                }}
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            )}
           </div>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="w-12 h-12 rounded-full bg-card border border-border shadow-md flex items-center justify-center"
+              >
+                <Filter className="w-5 h-5 text-foreground" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-64 p-3 bg-card rounded-lg border border-border shadow-md z-[10001]">
+              <DropdownMenuLabel>Filtrar</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">Categoria</p>
+                <Select value={selectedCategoryId} onValueChange={(value: string): void => {
+                  setSelectedCategoryId(value);
+                  refetch();
+                }}>
+                  <SelectTrigger className="w-full bg-input border border-input focus:ring-ring focus:ring-1">
+                    <SelectValue placeholder="Todas as Categorias" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ss">Todas as Categorias</SelectItem>
+                    {categories.map((category: Category): JSX.Element => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <button
             className="w-12 h-12 rounded-full bg-card border border-border shadow-md flex items-center justify-center"
             disabled={isLoading || !hasMore}
@@ -41,6 +104,7 @@ const History = (): JSX.Element => {
             />
           </button>
         </div>
+
 
         {/* Date Filters */}
         <div className="grid grid-cols-2 gap-3 mb-6">

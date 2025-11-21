@@ -2,12 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCreateCategory } from "@/hooks/api/use-categories-api";
 import { toast } from "@/hooks/use-toast";
-import { categoriesAPI } from "@/lib/api";
-import { useState } from "react";
-import { IconPicker } from "./IconPicker";
-import { ColorPicker } from "./ColorPicker";
+import { Description } from "@radix-ui/react-dialog";
 import { ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { useState } from "react";
+import { ColorPicker } from "./ColorPicker";
+import { IconPicker } from "./IconPicker";
+
+
 
 interface AddCategoryDialogProps {
   open: boolean;
@@ -22,6 +25,8 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
   const [icon, setIcon] = useState<string>("ShoppingCart");
   const [iconColor, setIconColor] = useState<string>("#ffffff");
   const [bgColor, setBgColor] = useState<string>("#3b82f6");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const createCategoryMutation = useCreateCategory();
 
   const handleSave = async () => {
     if (!categoryName) {
@@ -33,17 +38,15 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
       return;
     }
 
+    setIsSubmitting(true);
     try {
-      await categoriesAPI.create({
+      await createCategoryMutation.mutateAsync({
         title: categoryName,
         type: categoryType === "income",
         goal: goal || null,
         icon,
         iconColor,
         bgColor,
-        spent: 0,
-        createdAt: new Date(),
-        updatedAt: new Date(),
         userCreated: "current-user",
       });
 
@@ -51,7 +54,7 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
         title: "Categoria adicionada",
         description: `A categoria '${categoryName}' (${categoryType === "expense" ? "Despesa" : "Receita"}) foi adicionada com sucesso.`,
       });
-      
+
       setCategoryName("");
       setGoal("");
       setIcon("ShoppingCart");
@@ -65,6 +68,8 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
         description: "Não foi possível adicionar a categoria.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -74,7 +79,8 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
         <DialogHeader>
           <DialogTitle className="text-foreground">Adicionar Categoria</DialogTitle>
         </DialogHeader>
-        
+        <Description>Essa categoria é o tipo que uma transação vai assumir</Description>
+
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label className="text-foreground">Tipo</Label>
@@ -82,33 +88,31 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
               <button
                 type="button"
                 onClick={() => setCategoryType("expense")}
-                className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
-                  categoryType === "expense"
-                    ? "border-red-500 bg-red-500/10"
-                    : "border-border bg-card/50 hover:border-border/80"
-                }`}
+                className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${categoryType === "expense"
+                  ? "border-red-500 bg-red-500/10"
+                  : "border-border bg-card/50 hover:border-border/80"
+                  }`}
               >
-                <ArrowDownCircle 
-                  className={categoryType === "expense" ? "text-red-500" : "text-muted-foreground"} 
-                  size={24} 
+                <ArrowDownCircle
+                  className={categoryType === "expense" ? "text-red-500" : "text-muted-foreground"}
+                  size={24}
                 />
                 <span className={categoryType === "expense" ? "text-red-500 font-medium" : "text-foreground"}>
                   Despesa
                 </span>
               </button>
-              
+
               <button
                 type="button"
                 onClick={() => setCategoryType("income")}
-                className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${
-                  categoryType === "income"
-                    ? "border-green-500 bg-green-500/10"
-                    : "border-border bg-card/50 hover:border-border/80"
-                }`}
+                className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${categoryType === "income"
+                  ? "border-green-500 bg-green-500/10"
+                  : "border-border bg-card/50 hover:border-border/80"
+                  }`}
               >
-                <ArrowUpCircle 
-                  className={categoryType === "income" ? "text-green-500" : "text-muted-foreground"} 
-                  size={24} 
+                <ArrowUpCircle
+                  className={categoryType === "income" ? "text-green-500" : "text-muted-foreground"}
+                  size={24}
                 />
                 <span className={categoryType === "income" ? "text-green-500 font-medium" : "text-foreground"}>
                   Receita
@@ -116,7 +120,7 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
               </button>
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label className="text-foreground">Nome da Categoria</Label>
             <Input
@@ -129,14 +133,14 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
 
           <div className="space-y-2">
             <Label className="text-foreground">Ícone</Label>
-            <div className="flex items-center gap-4">
-              <IconPicker 
-                value={icon} 
+            <div className="space-y-3">
+              <IconPicker
+                value={icon}
                 onChange={setIcon}
                 iconColor={iconColor}
                 bgColor={bgColor}
               />
-              <div className="flex-1 space-y-3">
+              <div className="grid grid-cols-2 gap-3">
                 <ColorPicker
                   label="Cor do Ícone"
                   value={iconColor}
@@ -171,8 +175,8 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button onClick={handleSave}>
-            Adicionar
+          <Button onClick={handleSave} disabled={isSubmitting}>
+            {isSubmitting ? "Adicionando..." : "Adicionar"}
           </Button>
         </DialogFooter>
       </DialogContent>

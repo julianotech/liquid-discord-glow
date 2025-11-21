@@ -18,7 +18,7 @@ const Dashboard = () => {
   ];
   const [recordsToSee, setRecordsToSee] = useState<number>(3)
 
-  const res = transactions.reduce((acc, trx) => {
+  const { receita, despesas } = transactions.reduce((acc, trx) => {
     if (trx.type !== 'expense') {
       acc.receita += Number(trx.amount)
       return acc
@@ -26,8 +26,6 @@ const Dashboard = () => {
     acc.despesas += Number(trx.amount)
     return acc
   }, { receita: 0, despesas: 0 })
-  console.log(res)
-  const { receita, despesas } = res
 
 
   return (

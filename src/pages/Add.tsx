@@ -7,8 +7,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useCategories } from "@/hooks/api/use-categories-api";
+import { useCreateTransaction } from "@/hooks/api/use-transactions-api";
 import { toast } from "@/hooks/use-toast";
-import { transactionsAPI } from "@/lib/api";
+import { Category } from "@/lib/api/types";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ArrowDownCircle, ArrowUpCircle, CalendarIcon } from "lucide-react";
@@ -36,8 +38,19 @@ const Add = (): JSX.Element => {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState<Date>(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: categories = [] } = useCategories();
+  const oito = useCreateTransaction()
 
-  const categories = type === "expense" ? expenseCategories : incomeCategories;
+
+  const { incomeCategories, expenseCategories } = categories.reduce((acc, category) => {
+    if (category.type) {
+      acc.incomeCategories.push(category)
+      return acc
+    }
+    acc.expenseCategories.push(category)
+    return acc
+  }, { incomeCategories: [] as Category[], expenseCategories: [] as Category[] })
+
 
   const handleSubmit = async (): Promise<void> => {
     if (!category || !amount) {
@@ -48,17 +61,18 @@ const Add = (): JSX.Element => {
       });
       return;
     }
+    const form = {
+      description,
+      categoryId: category,
+      amount,
+      date,
+    };
 
     setIsSubmitting(true);
     try {
-      await transactionsAPI.create({
-        type,
-        category,
-        amount: parseFloat(amount),
-        description,
-        date,
-        icon: "DollarSign",
-      });
+      await oito.mutateAsync(form).then(res => {
+        return res
+      })
 
       toast({
         title: "Transação adicionada",
@@ -66,10 +80,10 @@ const Add = (): JSX.Element => {
       });
 
       // Reset form
-      setCategory("");
-      setAmount("");
-      setDescription("");
-      setDate(new Date());
+      // setCategory("");
+      // setAmount("");
+      // setDescription("");
+      // setDate(new Date());
     } catch (error) {
       toast({
         title: "Erro",
@@ -155,8 +169,8 @@ const Add = (): JSX.Element => {
                 <SelectValue placeholder="Selecione uma categoria" />
               </SelectTrigger>
               <SelectContent>
-                {categories.map((cat) => (
-                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                {(type === 'income' ? incomeCategories : expenseCategories).map((cat): JSX.Element => (
+                  <SelectItem key={cat.id} value={cat.id}>{cat.title}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -169,7 +183,7 @@ const Add = (): JSX.Element => {
               type="number"
               placeholder="0.00"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e): void => setAmount(e.target.value)}
               className="bg-input/50 backdrop-blur-sm border border-input focus:ring-ring focus:ring-1"
               step="0.01"
               min="0"
@@ -208,7 +222,7 @@ const Add = (): JSX.Element => {
                 <Calendar
                   mode="single"
                   selected={date}
-                  onSelect={(newDate) => newDate && setDate(newDate)}
+                  onSelect={(newDate: Date): void => newDate && setDate(newDate)}
                   initialFocus
                 />
               </PopoverContent>
@@ -226,7 +240,7 @@ const Add = (): JSX.Element => {
             {isSubmitting ? "Adicionando..." : "Adicionar Transação"}
           </Button>
           <Button
-            onClick={() => setIsCategoryDialogOpen(true)}
+            onClick={(): void => setIsCategoryDialogOpen(true)}
             variant="outline"
             className="w-full h-12 text-base font-medium"
           >
@@ -244,3 +258,5 @@ const Add = (): JSX.Element => {
 };
 
 export default Add;
+
+
