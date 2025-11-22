@@ -4,18 +4,9 @@ import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 export const SelectCategory = ({ type, emitCategory }: { type: 'expense' | 'income' | 'all', emitCategory: (val: string) => void }): JSX.Element => {
-  const [category, setCategory] = useState<string>("");
+  const [category] = useState<string>("");
 
   const { data: categories = [], refetch: refetchCategories } = useCategories({ type });
-
-  // const { incomeCategories, expenseCategories } = categories.reduce((acc, categoryItem) => {
-  //   if (categoryItem.type) {
-  //     acc.incomeCategories.push(categoryItem);
-  //   } else {
-  //     acc.expenseCategories.push(categoryItem);
-  //   }
-  //   return acc;
-  // }, { incomeCategories: [] as Category[], expenseCategories: [] as Category[] });
 
   return (<div className="space-y-2">
     <Label className="text-foreground">Categoria *</Label>

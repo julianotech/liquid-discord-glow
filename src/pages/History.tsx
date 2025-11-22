@@ -1,11 +1,8 @@
+import { CategoryFilter } from "@/components/CategoryFilter";
 import { TransactionItem } from "@/components/TransactionItem";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useCategories } from "@/hooks/api/use-categories-api";
 import { useTransactions } from "@/hooks/api/use-transactions-api";
-import { Category } from "@/lib/api/types";
-import { Filter, Plus, Search, XCircle } from "lucide-react";
+import { Plus, Search, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -14,19 +11,18 @@ const History = (): JSX.Element => {
   const [limit, setLimit] = useState<number>(6)
   const [searchParams] = useSearchParams();
   const categoryIdFromUrl = searchParams.get('categoryId');
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(categoryIdFromUrl || undefined);
-  const { data: categories = [] } = useCategories();
+  const [selectedCategoryId, selectCategory] = useState<string | undefined>(categoryIdFromUrl || undefined);
   const { data, isLoading, refetch } = useTransactions({ limit, search, categoryId: selectedCategoryId });
   const transactions = data?.data || [];
   const hasMore = data?.hasMore
 
-  useEffect(() => {
+  useEffect((): void => {
     if (categoryIdFromUrl) {
-      setSelectedCategoryId(categoryIdFromUrl);
+      selectCategory(categoryIdFromUrl);
     }
   }, [categoryIdFromUrl]);
 
-  useEffect(() => {
+  useEffect((): void => {
     refetch();
   }, [search, selectedCategoryId]);
 
@@ -41,7 +37,7 @@ const History = (): JSX.Element => {
               placeholder="Pesquisar"
               value={search}
               className="bg-input border border-input focus:ring-ring focus:ring-1 pl-10 pr-10"
-              onChange={(e) => updateSearch(e.target.value)}
+              onChange={(e): void => updateSearch(e.target.value)}
             />
             {search && (
               <button
@@ -56,38 +52,7 @@ const History = (): JSX.Element => {
             )}
           </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                className="w-12 h-12 rounded-full bg-card border border-border shadow-md flex items-center justify-center"
-              >
-                <Filter className="w-5 h-5 text-foreground" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-64 p-3 bg-card rounded-lg border border-border shadow-md z-[10001]">
-              <DropdownMenuLabel>Filtrar</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">Categoria</p>
-                <Select value={selectedCategoryId} onValueChange={(value: string): void => {
-                  setSelectedCategoryId(value);
-                  refetch();
-                }}>
-                  <SelectTrigger className="w-full bg-input border border-input focus:ring-ring focus:ring-1">
-                    <SelectValue placeholder="Todas as Categorias" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ss">Todas as Categorias</SelectItem>
-                    {categories.map((category: Category): JSX.Element => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <CategoryFilter emitRefetch={(categoryId: string): void => selectCategory(categoryId)} />
 
           <button
             className="w-12 h-12 rounded-full bg-card border border-border shadow-md flex items-center justify-center"

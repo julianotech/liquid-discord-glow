@@ -1,11 +1,11 @@
 import { AddCategoryDialog } from "@/components/AddCategoryDialog";
 import { SelectCategory } from "@/components/SelectCategory";
+import { SelectTransactionType } from "@/components/SelectTransactionType";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useCategories } from "@/hooks/api/use-categories-api";
 import { useCreateTransaction } from "@/hooks/api/use-transactions-api";
@@ -13,7 +13,7 @@ import { toast } from "@/hooks/use-toast";
 import { Category } from "@/lib/api/types";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { ArrowDownCircle, ArrowUpCircle, CalendarIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 
 const expenseCategories = [
@@ -105,59 +105,7 @@ const Add = (): JSX.Element => {
         </div>
 
         {/* Type Selection with Radio Buttons */}
-        <div className="bg-card/50 backdrop-blur-md border border-border/50 rounded-lg p-6 space-y-3">
-          <Label className="text-foreground font-medium">Tipo de Transação</Label>
-          <RadioGroup value={type} onValueChange={(value: "expense" | "income"): void => {
-            setType(value);
-            setCategory("");
-          }}>
-            <div className="grid grid-cols-2 gap-3">
-              <label
-                htmlFor="expense"
-                className={cn(
-                  "flex items-center justify-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
-                  type === "expense"
-                    ? "border-destructive bg-destructive/10"
-                    : "border-border bg-card/30 hover:border-border/80"
-                )}
-              >
-                <RadioGroupItem value="expense" id="expense" className="sr-only" />
-                <ArrowDownCircle className={cn(
-                  "w-5 h-5",
-                  type === "expense" ? "text-destructive" : "text-muted-foreground"
-                )} />
-                <span className={cn(
-                  "font-medium",
-                  type === "expense" ? "text-destructive" : "text-foreground"
-                )}>
-                  Despesa
-                </span>
-              </label>
-
-              <label
-                htmlFor="income"
-                className={cn(
-                  "flex items-center justify-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
-                  type === "income"
-                    ? "border-primary bg-primary/10"
-                    : "border-border bg-card/30 hover:border-border/80"
-                )}
-              >
-                <RadioGroupItem value="income" id="income" className="sr-only" />
-                <ArrowUpCircle className={cn(
-                  "w-5 h-5",
-                  type === "income" ? "text-primary" : "text-muted-foreground"
-                )} />
-                <span className={cn(
-                  "font-medium",
-                  type === "income" ? "text-primary" : "text-foreground"
-                )}>
-                  Receita
-                </span>
-              </label>
-            </div>
-          </RadioGroup>
-        </div>
+        <SelectTransactionType type={type} emitType={setType} refetchCategories={setCategory} />
 
         {/* Form Fields */}
         <div className="bg-card/50 backdrop-blur-md border border-border/50 rounded-lg p-6 space-y-4">
