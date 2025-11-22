@@ -1,6 +1,6 @@
 import { Transaction } from "@/lib/api/types";
 import { toLocaleCurrencyWithCoin } from "@/lib/utils";
-import { Icons } from "./Icons";
+import * as Icons from "./Icons";
 import { Card } from "./ui/card";
 
 interface TransactionItemProps {
