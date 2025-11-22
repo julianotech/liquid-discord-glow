@@ -1,4 +1,4 @@
-import { Icons } from "@/components/Icons";
+import * as Icons from "@/components/Icons";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";

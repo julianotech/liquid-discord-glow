@@ -1,7 +1,7 @@
 import { AddCategoryDialog } from "@/components/AddCategoryDialog";
 import CategoryItem from "@/components/CategoryItem";
 import { EditCategoryDialog } from "@/components/EditCategoryDialog";
-import { Icons } from "@/components/Icons";
+import * as Icons from "@/components/Icons";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { useCategories, useUpdateCategory } from "@/hooks/api/use-categories-api";

@@ -1,7 +1,7 @@
 import { Category } from "@/lib/api/types";
 import { cn } from "@/lib/utils";
 import { ChevronRight, Pencil } from "lucide-react";
-import { Icons } from "./Icons";
+import * as Icons from "./Icons";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 

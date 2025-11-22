@@ -1,1 +1,1 @@
-export * as Icons from "lucide-react";
+export * from "lucide-react";
