@@ -91,8 +91,8 @@ async function apiClient<T>(
 
 function handleMockRequest<T>(endpoint: string, options?: RequestInit & ReqInfo): Promise<K<T>> {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      let mockData: any = [];
+    setTimeout((): void => {
+      let mockData: unknown = [];
 
       // Categories
       if (endpoint.includes('/api/categories')) {
@@ -116,7 +116,7 @@ function handleMockRequest<T>(endpoint: string, options?: RequestInit & ReqInfo)
           mockData = { success: true };
         } else {
           const type = options?.queryParams?.type;
-          mockData = type !== undefined 
+          mockData = type !== undefined
             ? mockCategories.filter(c => c.type === Boolean(Number(type)))
             : mockCategories;
         }
@@ -151,16 +151,16 @@ function handleMockRequest<T>(endpoint: string, options?: RequestInit & ReqInfo)
         } else {
           const { categoryId, search, limit = 10 } = options?.queryParams || {};
           let filtered = [...mockTransactions];
-          
+
           if (categoryId) {
             filtered = filtered.filter(t => t.category === categoryId);
           }
           if (search) {
-            filtered = filtered.filter(t => 
+            filtered = filtered.filter(t =>
               t.description.toLowerCase().includes(String(search).toLowerCase())
             );
           }
-          
+
           mockData = filtered.slice(0, Number(limit));
         }
       }
