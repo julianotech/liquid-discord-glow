@@ -1,4 +1,4 @@
-export const API_URL = "http://localhost:3000";
+import { API_URL } from "@/config/env";
 
 export const API_ENDPOINTS = {
   // Login

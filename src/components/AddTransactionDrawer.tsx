@@ -1,19 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
 import { useCreateTransaction } from "@/hooks/api/use-transactions-api";
 import { toast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { ArrowDownCircle, ArrowUpCircle, CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { AddCategoryDialog } from "./AddCategoryDialog";
 import { SelectCategory } from "./SelectCategory";
+import { SelectTransactionType } from "./SelectTransactionType";
+import { FormField } from "./shared/FormField";
+import { DatePicker } from "./shared/DatePicker";
+import { GlassCard } from "./shared/GlassCard";
 
 interface AddTransactionDrawerProps {
   open: boolean;
@@ -78,128 +73,44 @@ const AddTransactionDrawer = ({ open, onOpenChange, defaultCategory, defaultType
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="bg-card rounded-lg border border-border shadow-md z-[10000]">
-        <DrawerHeader>
+      <DrawerContent className="bg-card rounded-lg border border-border shadow-md z-[10000] max-h-[90vh]">
+        <DrawerHeader className="flex-shrink-0">
           <DrawerTitle className="text-foreground">Adicionar Transação</DrawerTitle>
           <p className="text-sm text-muted-foreground">Adicione uma nova transação à sua carteira</p>
         </DrawerHeader>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-6">
-          {/* Type Selection with Radio Buttons */}
-          <div className="bg-card/50 backdrop-blur-md border border-border/50 rounded-lg p-6 space-y-3">
-            <Label className="text-foreground font-medium">Tipo de Transação</Label>
-            <RadioGroup value={type} onValueChange={(value: "expense" | "income"): void => {
-              setType(value);
-              setCategory("");
-            }}>
-              <div className="grid grid-cols-2 gap-3">
-                <label
-                  htmlFor="expense"
-                  className={cn(
-                    "flex items-center justify-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
-                    type === "expense"
-                      ? "border-destructive bg-destructive/10"
-                      : "border-border bg-card/30 hover:border-border/80"
-                  )}
-                >
-                  <RadioGroupItem value="expense" id="expense" className="sr-only" />
-                  <ArrowDownCircle className={cn(
-                    "w-5 h-5",
-                    type === "expense" ? "text-destructive" : "text-muted-foreground"
-                  )} />
-                  <span className={cn(
-                    "font-medium",
-                    type === "expense" ? "text-destructive" : "text-foreground"
-                  )}>
-                    Despesa
-                  </span>
-                </label>
+          <SelectTransactionType type={type} emitType={setType} refetchCategories={() => setCategory("")} />
 
-                <label
-                  htmlFor="income"
-                  className={cn(
-                    "flex items-center justify-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
-                    type === "income"
-                      ? "border-primary bg-primary/10"
-                      : "border-border bg-card/30 hover:border-border/80"
-                  )}
-                >
-                  <RadioGroupItem value="income" id="income" className="sr-only" />
-                  <ArrowUpCircle className={cn(
-                    "w-5 h-5",
-                    type === "income" ? "text-primary" : "text-muted-foreground"
-                  )} />
-                  <span className={cn(
-                    "font-medium",
-                    type === "income" ? "text-primary" : "text-foreground"
-                  )}>
-                    Receita
-                  </span>
-                </label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          {/* Form Fields */}
-          <div className="bg-card/50 backdrop-blur-md border border-border/50 rounded-lg p-6 space-y-4">
-            {/* Category Selection */}
+          <GlassCard className="p-6 space-y-4">
             <SelectCategory type={type} emitCategory={(value: string): void => setCategory(value)} />
+            
+            <FormField
+              label="Valor *"
+              type="number"
+              value={amount}
+              onChange={setAmount}
+              placeholder="0.00"
+              step="0.01"
+              min="0"
+            />
 
-            {/* Amount */}
-            <div className="space-y-2">
-              <Label className="text-foreground">Valor *</Label>
-              <Input
-                type="number"
-                placeholder="0.00"
-                value={amount}
-                onChange={(e): void => setAmount(e.target.value)}
-                className="bg-input/50 backdrop-blur-sm border border-input focus:ring-ring focus:ring-1"
-                step="0.01"
-                min="0"
-              />
-            </div>
+            <FormField
+              label="Descrição"
+              type="textarea"
+              value={description}
+              onChange={setDescription}
+              placeholder="Adicione uma descrição..."
+              rows={3}
+            />
 
-            {/* Description */}
-            <div className="space-y-2">
-              <Label className="text-foreground">Descrição</Label>
-              <Textarea
-                placeholder="Adicione uma descrição..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="bg-input/50 backdrop-blur-sm border border-input focus:ring-ring focus:ring-1 resize-none"
-                rows={3}
-              />
-            </div>
+            <DatePicker
+              label="Data"
+              date={date}
+              onDateChange={(newDate) => newDate && setDate(newDate)}
+            />
+          </GlassCard>
 
-            {/* Date */}
-            <div className="space-y-2">
-              <Label className="text-foreground">Data</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal bg-input/50 backdrop-blur-sm border border-input focus:ring-ring focus:ring-1",
-                      !date && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "PPP") : <span>Selecione uma data</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 bg-card rounded-lg border border-border shadow-md" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={(newDate: Date): void => newDate && setDate(newDate)}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
           <div className="space-y-3">
             <Button
               onClick={handleSubmit}
@@ -218,7 +129,7 @@ const AddTransactionDrawer = ({ open, onOpenChange, defaultCategory, defaultType
           </div>
         </div>
 
-        <DrawerFooter>
+        <DrawerFooter className="flex-shrink-0">
           <DrawerClose asChild>
             <Button variant="outline" onClick={() => onOpenChange(false)} className="w-full">
               Cancelar
