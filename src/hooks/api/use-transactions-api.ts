@@ -16,15 +16,21 @@ export type UpdateTransactionData = Partial<CreateTransactionData>;
 // --- Hooks Principais para Transações ---
 
 // Hook para buscar todas as transações
-export function useTransactions(queryParams: Record<string, string | number | undefined> = {}) {
+export function useTransactions(queryParams: { limit?: number; search?: string; categoryId?: string; type?: "expense" | "income" } = {}) {
   // 🎯 TIPAGEM: useQuery<Tipo do dado no cache, Tipo do erro, Tipo do dado que você quer usar>
   return useQuery<ApiResponse<Transaction[]>, Error, ApiResponse<Transaction[]>>({
     queryKey: ["transactions", queryParams],
 
     // queryFn deve retornar o objeto completo (ApiResponse<Transaction[]>)
     queryFn: async (): Promise<ApiResponse<Transaction[]>> => {
+      const { type, ...restParams } = queryParams;
+      const apiType = type === "income" ? true : type === "expense" ? false : undefined;
+
       const response = await apiClient<Transaction[]>(API_ENDPOINTS.transactions, {
-        queryParams
+        queryParams: {
+          ...restParams,
+          ...(apiType !== undefined && { type: apiType }),
+        },
       });
       return response; // Retorna o objeto completo: { data: [...], hasMore: true, ... }
     },
