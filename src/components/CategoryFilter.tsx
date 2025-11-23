@@ -24,6 +24,12 @@ export const CategoryFilter = ({
     }
   }, [selectedCategoryId]);
 
+  useEffect(() => {
+    // Reset category filter when type changes
+    setCategory("all");
+    emitRefetch(undefined);
+  }, [type]);
+
   return (
     <Select 
       value={category} 
