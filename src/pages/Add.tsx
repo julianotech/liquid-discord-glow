@@ -72,7 +72,7 @@ const Add = (): JSX.Element => {
         <SelectTransactionType type={type} emitType={setType} refetchCategories={() => setCategory("")} />
 
         <GlassCard className="p-6 space-y-4">
-          <SelectCategory type={type} emitCategory={(value: string): void => setCategory(value)} />
+          <SelectCategory type={type} emitCategory={(value: string): void => setCategory(value)} selectedCategory={category} />
 
           <FormField
             label="Valor *"
