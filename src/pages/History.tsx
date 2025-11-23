@@ -143,7 +143,11 @@ const History = (): JSX.Element => {
 
               <div className="space-y-2">
                 <Label className="text-foreground font-medium">Categoria</Label>
-                <CategoryFilter emitRefetch={(categoryId: string | undefined): void => selectCategory(categoryId)} selectedCategoryId={selectedCategoryId} />
+                <CategoryFilter 
+                  emitRefetch={(categoryId: string | undefined): void => selectCategory(categoryId)} 
+                  selectedCategoryId={selectedCategoryId}
+                  type={selectedType}
+                />
               </div>
 
               <DropdownMenuSeparator />

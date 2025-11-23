@@ -13,11 +13,15 @@ export const TransactionItem = ({ transaction }: TransactionItemProps): JSX.Elem
   const isIncome = transaction?.type === 'income'
 
   return (
-    <Card className={`bg-card/50 backdrop-blur-md border border-border/50 rounded-lg p-4 transition-all hover:border-border/80 ${isIncome ? 'hover:shadow-green-500/10 hover:shadow-lg' : 'hover:shadow-red-500/10 hover:shadow-lg'
-      }`}>
+    <Card 
+      className={`bg-card/50 backdrop-blur-md border border-border/50 rounded-lg p-4 transition-all hover:border-border/80 cursor-pointer ${
+        isIncome ? 'hover:shadow-green-500/10 hover:shadow-lg' : 'hover:shadow-red-500/10 hover:shadow-lg'
+      }`}
+    >
       <div className="flex items-center gap-4">
-        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isIncome ? 'bg-green-500/10' : 'bg-red-500/10'
-          }`}>
+        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+          isIncome ? 'bg-green-500/10' : 'bg-red-500/10'
+        }`}>
           <Icon
             className={`w-6 h-6 ${isIncome ? 'text-green-500' : 'text-red-500'}`}
           />
