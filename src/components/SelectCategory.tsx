@@ -14,7 +14,8 @@ export const SelectCategory = ({
   selectedCategory?: string,
   label?: string
 }): JSX.Element => {
-  const { data: categories = [] } = useCategories({ type });
+  const filterType = type === 'all' ? undefined : type;
+  const { data: categories = [] } = useCategories({ type: filterType });
   const currentSelectedCategory = categories.find(cat => cat.id === selectedCategory);
 
   return (

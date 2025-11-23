@@ -24,7 +24,8 @@ export function useTransactions(queryParams: { limit?: number; search?: string; 
     // queryFn deve retornar o objeto completo (ApiResponse<Transaction[]>)
     queryFn: async (): Promise<ApiResponse<Transaction[]>> => {
       const { type, ...restParams } = queryParams;
-      const apiType = type === "income" ? "true" : type === "expense" ? "false" : undefined;
+      // Converte para string esperada pela API
+      const apiType = type === "income" ? "income" : type === "expense" ? "expense" : undefined;
 
       const response = await apiClient<Transaction[]>(API_ENDPOINTS.transactions, {
         queryParams: {

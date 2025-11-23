@@ -20,13 +20,19 @@ export type UpdateCategoryData = Partial<CreateCategoryData>;
 // --- Hooks Principais para Categorias ---
 
 // Hook para buscar todas as categorias
-export function useCategories(queryParams: Record<string, string | number | undefined> = {}) {
+export function useCategories(queryParams: { limit?: number; search?: string; type?: "expense" | "income" } = {}) {
   return useQuery({
     queryKey: ["categories", queryParams],
     queryFn: async (): Promise<Category[]> => {
+      const { type, ...restParams } = queryParams;
+      const apiType = type === "income" ? "true" : type === "expense" ? "false" : undefined;
+      
       // Usando o endpoint de categorias
       const response = await apiClient<Category[]>(API_ENDPOINTS.categories, {
-        queryParams
+        queryParams: {
+          ...restParams,
+          ...(apiType !== undefined && { type: apiType }),
+        }
       });
       return response.data;
     },
