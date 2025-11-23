@@ -116,7 +116,12 @@ const Categories = (): JSX.Element => {
       {selectedCategory && (
         <EditCategoryDialog
           open={dialogOpen}
-          onOpenChange={setDialogOpen}
+          onOpenChange={(open) => {
+            setDialogOpen(open);
+            if (!open) {
+              setSelectedCategory(undefined);
+            }
+          }}
           categoryName={selectedCategory.title}
           currentGoal={Number(selectedCategory.goal) || undefined}
           selectedIcon={selectedCategory.icon || ""}
