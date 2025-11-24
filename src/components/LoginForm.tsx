@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 export const LoginForm = (): JSX.Element => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +28,7 @@ export const LoginForm = (): JSX.Element => {
       });
       return;
     }
-    // setIsLoading(true);
+    setIsLoading(true);
     try {
       await login(email, password);
 
@@ -44,7 +45,7 @@ export const LoginForm = (): JSX.Element => {
         variant: "destructive",
       });
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 

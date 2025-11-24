@@ -35,9 +35,9 @@ export function useLogin() {
       return response.data;
     },
     onSuccess: (data): void => {
-      // // Armazenar token e usuário
-      // localStorage.setItem("adminToken", data.token);
-      // localStorage.setItem("adminUser", JSON.stringify(data.user));
+      // Armazenar token e usuário
+      localStorage.setItem("adminToken", data.token);
+      localStorage.setItem("adminUser", JSON.stringify(data.user));
 
       // Atualizar cache do usuário atual
       queryClient.setQueryData(["auth", "me"], data.user);
@@ -53,7 +53,7 @@ export function useMe() {
       const response = await apiClient<User>(API_ENDPOINTS.me);
       return response.data;
     },
-    // enabled: !!localStorage.getItem("adminToken"),
+    enabled: !!localStorage.getItem("adminToken"),
     retry: false,
   });
 }
@@ -65,8 +65,8 @@ export function useLogout() {
   return useMutation({
     mutationFn: async () => {
       // Aqui você pode adicionar uma chamada à API se tiver endpoint de logout
-      // localStorage.removeItem("adminToken");
-      // localStorage.removeItem("adminUser");
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("adminUser");
     },
     onSuccess: (): void => {
       // Limpar todo o cache

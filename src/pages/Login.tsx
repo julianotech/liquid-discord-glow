@@ -1,20 +1,3 @@
-// import { LoginForm } from "@/components/LoginForm";
-
-// const Index = (): JSX.Element => {
-//   return (
-//     <div className="min-h-screen bg-background relative overflow-hidden">
-//       {/* <AnimatedBackground /> */}
-
-//       <main className="flex items-center justify-center min-h-screen p-4 relative z-10">
-//         <div className="w-full max-w-lg">
-//           <LoginForm />
-//         </div>
-//       </main>
-//     </div>
-//   );
-// };
-
-// export default Index;
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
