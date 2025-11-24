@@ -7,6 +7,8 @@ import { BottomNav } from "./components/BottomNav";
 import { AuthProvider } from "./contexts/AuthContext";
 import Add from "./pages/Add";
 import Categories from "./pages/Categories";
+import CreateCategory from "./pages/CreateCategory";
+import EditCategory from "./pages/EditCategory";
 import Dashboard from "./pages/Dashboard";
 import History from "./pages/History";
 import Login from "./pages/Login";
@@ -39,6 +41,8 @@ const App = () => (
             <Route element={<Layout />}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/categories" element={<Categories />} />
+              <Route path="/categories/new" element={<CreateCategory />} />
+              <Route path="/categories/:id/edit" element={<EditCategory />} />
               <Route path="/history" element={<History />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/add" element={<Add />} />
