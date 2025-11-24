@@ -1,47 +1,15 @@
-import { AddCategoryDialog } from "@/components/AddCategoryDialog";
 import CategoryItem from "@/components/CategoryItem";
-import { EditCategoryDialog } from "@/components/EditCategoryDialog";
 import * as Icons from "@/components/Icons";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
-import { useCategories, useUpdateCategory } from "@/hooks/api/use-categories-api";
+import { useCategories } from "@/hooks/api/use-categories-api";
 import { Category } from "@/lib/api/types";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Categories = (): JSX.Element => {
   const navigate = useNavigate();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [addCategoryOpen, setAddCategoryOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | undefined>(undefined);
-
   const expenseCategories: Category[] = [];
   const incomeCategories: Category[] = [];
-  const { data: categories = [], refetch: refetchCategories } = useCategories();
-  const updateCategoryMutation = useUpdateCategory();
-
-  const handleUpdateCategory = async (updatedIcon: string, updatedColor: string, updatedGoal?: number) => {
-    if (selectedCategory) {
-      try {
-        await updateCategoryMutation.mutateAsync({
-          id: selectedCategory.id,
-          data: { ...selectedCategory, icon: updatedIcon, bgColor: updatedColor, goal: updatedGoal ? String(updatedGoal) : null },
-        });
-        toast({
-          title: "Categoria atualizada",
-          description: `A categoria '${selectedCategory.title}' foi atualizada com sucesso.`,
-        });
-        refetchCategories();
-        setDialogOpen(false);
-      } catch (error) {
-        toast({
-          title: "Erro",
-          description: "Não foi possível atualizar a categoria.",
-          variant: "destructive",
-        });
-      }
-    }
-  };
+  const { data: categories = [] } = useCategories();
 
   for (const category of categories) {
     if (category.type) {
@@ -80,8 +48,7 @@ const Categories = (): JSX.Element => {
 
           whenClick={(categoryId: string) => navigate(`/history?categoryId=${categoryId}`)}
           onEditCategory={(category: Category): void => {
-            setSelectedCategory(category);
-            setDialogOpen(true);
+            navigate(`/categories/${category.id}/edit`);
           }}
         />
         {/* Income Categories */}
@@ -91,44 +58,17 @@ const Categories = (): JSX.Element => {
           whenClick={(categoryId: string) => navigate(`/history?categoryId=${categoryId}`)}
           categories={incomeCategories}
           onEditCategory={(category) => {
-            setSelectedCategory(category);
-            setDialogOpen(true);
+            navigate(`/categories/${category.id}/edit`);
           }} />
 
         {/* Add Category Button */}
         <Button
-          onClick={(): void => setAddCategoryOpen(true)}
+          onClick={(): void => navigate("/categories/new")}
           className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-primary hover:bg-primary/90 shadow-lg z-50"
         >
           <Plus className="w-6 h-6" />
         </Button>
       </main >
-
-      <AddCategoryDialog
-        open={addCategoryOpen}
-        onOpenChange={setAddCategoryOpen}
-        onCategoryAdded={(): void => {
-          // TODO: Refresh categories list
-          console.log("Category added, should refresh list");
-        }}
-      />
-
-      {selectedCategory && (
-        <EditCategoryDialog
-          open={dialogOpen}
-          onOpenChange={(open) => {
-            setDialogOpen(open);
-            if (!open) {
-              setSelectedCategory(undefined);
-            }
-          }}
-          categoryName={selectedCategory.title}
-          currentGoal={Number(selectedCategory.goal) || undefined}
-          selectedIcon={selectedCategory.icon || ""}
-          selectedColor={selectedCategory.bgColor || ""}
-          onSave={handleUpdateCategory}
-        />
-      )}
     </div >
   );
 };
