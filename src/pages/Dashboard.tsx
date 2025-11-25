@@ -4,19 +4,25 @@ import { TransactionItem } from "@/components/TransactionItem";
 import { Button } from "@/components/ui/button";
 import { useTransactions } from "@/hooks/api/use-transactions-api";
 import { Transaction } from "@/lib/api/types";
-import { Activity, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [isTransactionDrawerOpen, setIsTransactionDrawerOpen] = useState(false);
+  const [limit, setLimit] = useState<number>(10);
 
-  const { data, isLoading } = useTransactions();
+  const { data, isLoading } = useTransactions({ limit });
   const transactions = data?.data || [];
-  const hasMore = data?.hasMore;
-  const monthData = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
-    //  "Jul", "Ago", "Set", "Out", "Nov", "Dez"
-  ];
-  const [recordsToSee, setRecordsToSee] = useState<number>(3)
+  const hasMore = data?.hasMore || false;
+
+  const loadMoreRef = useInfiniteScroll({
+    onLoadMore: () => setLimit(prev => prev + 10),
+    hasMore,
+    isLoading,
+  });
 
   const { receita, despesas } = transactions.reduce((acc, trx) => {
     if (trx.type !== 'expense') {
@@ -41,21 +47,33 @@ const Dashboard = () => {
 
         {/* Balance Cards */}
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <InfoCard value={receita} type={'income'} />
-          <InfoCard value={despesas} type={'expense'} />
+          <InfoCard 
+            value={receita} 
+            type={'income'} 
+            onClick={() => navigate('/history?type=income')}
+          />
+          <InfoCard 
+            value={despesas} 
+            type={'expense'} 
+            onClick={() => navigate('/history?type=expense')}
+          />
         </div>
 
         {/* Recent Transactions */}
         <div>
           <h2 className="text-xl font-bold text-foreground mb-4">Transações Recentes</h2>
           <div className="space-y-3">
-            {[...transactions.slice(0, recordsToSee)].map((transaction: Transaction): JSX.Element => (
+            {transactions.map((transaction: Transaction): JSX.Element => (
               <TransactionItem key={transaction.id} transaction={transaction} />
             ))}
           </div>
+          {hasMore && (
+            <div ref={loadMoreRef} className="h-10 flex items-center justify-center mt-4">
+              <p className="text-sm text-muted-foreground">Carregando...</p>
+            </div>
+          )}
         </div>
       </main>
-      <Activity onClick={(): void => setRecordsToSee(recordsToSee + 2)} />
       <AddTransactionDrawer
         open={isTransactionDrawerOpen}
         onOpenChange={setIsTransactionDrawerOpen}
