@@ -2,7 +2,7 @@ import { CategoryFilter } from "@/components/CategoryFilter";
 import { TransactionItem } from "@/components/TransactionItem";
 import { Input } from "@/components/ui/input";
 import { useTransactions } from "@/hooks/api/use-transactions-api";
-import { ArrowDownCircle, ArrowUpCircle, Plus, Search, XCircle, Filter } from "lucide-react";
+import { ArrowDownCircle, ArrowUpCircle, Search, XCircle, Filter } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -10,17 +10,25 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 const History = (): JSX.Element => {
   const [search, updateSearch] = useState<string>('');
-  const [limit, setLimit] = useState<number>(6)
+  const [limit, setLimit] = useState<number>(10);
   const [searchParams] = useSearchParams();
   const categoryIdFromUrl = searchParams.get('categoryId');
+  const typeFromUrl = searchParams.get('type') as "expense" | "income" | null;
   const [selectedCategoryId, selectCategory] = useState<string | undefined>(categoryIdFromUrl || undefined);
-  const [selectedType, setSelectedType] = useState<"expense" | "income" | undefined>(undefined);
+  const [selectedType, setSelectedType] = useState<"expense" | "income" | undefined>(typeFromUrl || undefined);
   const { data, isLoading, refetch } = useTransactions({ limit, search, categoryId: selectedCategoryId, type: selectedType });
   const transactions = data?.data || [];
-  const hasMore = data?.hasMore
+  const hasMore = data?.hasMore || false;
+
+  const loadMoreRef = useInfiniteScroll({
+    onLoadMore: () => setLimit(prev => prev + 10),
+    hasMore,
+    isLoading,
+  });
 
   const isFilterApplied = selectedCategoryId !== undefined || selectedType !== undefined;
 
@@ -28,7 +36,10 @@ const History = (): JSX.Element => {
     if (categoryIdFromUrl) {
       selectCategory(categoryIdFromUrl);
     }
-  }, [categoryIdFromUrl]);
+    if (typeFromUrl) {
+      setSelectedType(typeFromUrl);
+    }
+  }, [categoryIdFromUrl, typeFromUrl]);
 
   useEffect((): void => {
     refetch();
@@ -165,21 +176,6 @@ const History = (): JSX.Element => {
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          <button
-            className="w-12 h-12 rounded-full bg-card border border-border shadow-md flex items-center justify-center"
-            disabled={isLoading || !hasMore}
-            style={{ opacity: (isLoading || !hasMore) ? 0.5 : 1, cursor: (isLoading || !hasMore) ? 'not-allowed' : 'pointer' }}
-          >
-            <Plus
-              className="w-5 h-5 text-foreground"
-              onClick={(): void => {
-                if (!isLoading && hasMore) {
-                  setLimit(limit + 2);
-                }
-              }}
-            />
-          </button>
         </div>
 
         {/* Date Filters */}
@@ -219,19 +215,20 @@ const History = (): JSX.Element => {
         {/* Transactions List */}
         <div className="space-y-4">
           {transactions.map((transaction, index): JSX.Element => {
-            // const showDateHeader = index === 0 || transactions[index - 1].date !== transaction.date;
             if (!transaction.id) {
-              return (<span>sem transaçoies</span>)
+              return (<span key={index}>sem transações</span>)
             }
             return (
               <div key={transaction.id}>
-                {/* {showDateHeader && (
-                  <p className="text-sm text-muted-foreground mb-2 mt-4 first:mt-0">{new Date(transaction.date).toDateString()}</p>
-                )} */}
                 <TransactionItem transaction={transaction} />
               </div>
             );
           })}
+          {hasMore && (
+            <div ref={loadMoreRef} className="h-10 flex items-center justify-center mt-4">
+              <p className="text-sm text-muted-foreground">Carregando...</p>
+            </div>
+          )}
         </div>
       </main>
     </div>
