@@ -15,11 +15,18 @@ export interface User {
 interface LoginResponse {
   user: User;
   token: string;
+  wallets: Array<{ id: string; name: string; code: string }>;
 }
 
 interface LoginCredentials {
   email: string;
   password: string;
+}
+
+interface RegisterCredentials {
+  email: string;
+  password: string;
+  name: string;
 }
 
 // Hook para fazer login
@@ -35,9 +42,10 @@ export function useLogin() {
       return response.data;
     },
     onSuccess: (data): void => {
-      // Armazenar token e usuário
+      // Armazenar token, usuário e wallets
       localStorage.setItem("adminToken", data.token);
       localStorage.setItem("adminUser", JSON.stringify(data.user));
+      localStorage.setItem("userWallets", JSON.stringify(data.wallets));
 
       // Atualizar cache do usuário atual
       queryClient.setQueryData(["auth", "me"], data.user);
@@ -58,6 +66,30 @@ export function useMe() {
   });
 }
 
+// Hook para registrar novo usuário
+export function useRegister() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (credentials: RegisterCredentials): Promise<LoginResponse> => {
+      const response = await apiClient<LoginResponse>(API_ENDPOINTS.register, {
+        method: "POST",
+        body: JSON.stringify(credentials),
+      });
+      return response.data;
+    },
+    onSuccess: (data): void => {
+      // Armazenar token, usuário e wallets
+      localStorage.setItem("adminToken", data.token);
+      localStorage.setItem("adminUser", JSON.stringify(data.user));
+      localStorage.setItem("userWallets", JSON.stringify(data.wallets));
+
+      // Atualizar cache do usuário atual
+      queryClient.setQueryData(["auth", "me"], data.user);
+    },
+  });
+}
+
 // Hook para logout
 export function useLogout() {
   const queryClient = useQueryClient();
@@ -67,6 +99,8 @@ export function useLogout() {
       // Aqui você pode adicionar uma chamada à API se tiver endpoint de logout
       localStorage.removeItem("adminToken");
       localStorage.removeItem("adminUser");
+      localStorage.removeItem("userWallets");
+      localStorage.removeItem("selectedWalletId");
     },
     onSuccess: (): void => {
       // Limpar todo o cache

@@ -14,6 +14,7 @@ import History from "./pages/History";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Settings from "./pages/Settings";
+import Wallets from "./pages/Wallets";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/wallets" element={<Wallets />} />
             <Route element={<Layout />}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/categories" element={<Categories />} />

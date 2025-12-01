@@ -27,11 +27,15 @@ export function useCategories(queryParams: { limit?: number; search?: string; ty
       const { type, ...restParams } = queryParams;
       const apiType = type === "income" ? "true" : type === "expense" ? "false" : undefined;
       
+      // Adicionar walletId
+      const selectedWalletId = localStorage.getItem("selectedWalletId");
+      
       // Usando o endpoint de categorias
       const response = await apiClient<Category[]>(API_ENDPOINTS.categories, {
         queryParams: {
           ...restParams,
           ...(apiType !== undefined && { type: apiType }),
+          ...(selectedWalletId && { walletId: selectedWalletId }),
         }
       });
       return response.data;
@@ -58,10 +62,17 @@ export function useCreateCategory() {
 
   return useMutation({
     mutationFn: async (categoryData: CreateCategoryData) => {
+      // Adicionar walletId
+      const selectedWalletId = localStorage.getItem("selectedWalletId");
+      const dataWithWallet = {
+        ...categoryData,
+        walletId: selectedWalletId,
+      };
+      
       // Endpoint POST para criar categoria
       const response = await apiClient<Category>(API_ENDPOINTS.categories, {
         method: "POST",
-        body: JSON.stringify(categoryData),
+        body: JSON.stringify(dataWithWallet),
       });
       return response;
     },

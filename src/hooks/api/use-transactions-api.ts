@@ -27,10 +27,14 @@ export function useTransactions(queryParams: { limit?: number; search?: string; 
       // Converte para string esperada pela API
       const apiType = type === "income" ? "income" : type === "expense" ? "expense" : undefined;
 
+      // Adicionar walletId
+      const selectedWalletId = localStorage.getItem("selectedWalletId");
+      
       const response = await apiClient<Transaction[]>(API_ENDPOINTS.transactions, {
         queryParams: {
           ...restParams,
           ...(apiType !== undefined && { type: apiType }),
+          ...(selectedWalletId && { walletId: selectedWalletId }),
         },
       });
       return response; // Retorna o objeto completo: { data: [...], hasMore: true, ... }
@@ -57,10 +61,17 @@ export function useCreateTransaction() {
 
   return useMutation({
     mutationFn: async (TransactionData: CreateTransactionData) => {
+      // Adicionar walletId
+      const selectedWalletId = localStorage.getItem("selectedWalletId");
+      const dataWithWallet = {
+        ...TransactionData,
+        walletId: selectedWalletId,
+      };
+      
       // Endpoint POST para criar transação
       const response = await apiClient<Transaction>(API_ENDPOINTS.transactions, {
         method: "POST",
-        body: JSON.stringify(TransactionData),
+        body: JSON.stringify(dataWithWallet),
       });
       return response;
     },
