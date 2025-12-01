@@ -1,16 +1,16 @@
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { TransactionItem } from "@/components/TransactionItem";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useTransactions } from "@/hooks/api/use-transactions-api";
-import { ArrowDownCircle, ArrowUpCircle, Search, XCircle, Filter } from "lucide-react";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { cn } from "@/lib/utils";
+import { ArrowDownCircle, ArrowUpCircle, Filter, Search, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 const History = (): JSX.Element => {
   const [search, updateSearch] = useState<string>('');
@@ -61,7 +61,7 @@ const History = (): JSX.Element => {
             {search && (
               <button
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                onClick={() => {
+                onClick={(): void => {
                   updateSearch("");
                   refetch();
                 }}
@@ -154,8 +154,8 @@ const History = (): JSX.Element => {
 
               <div className="space-y-2">
                 <Label className="text-foreground font-medium">Categoria</Label>
-                <CategoryFilter 
-                  emitRefetch={(categoryId: string | undefined): void => selectCategory(categoryId)} 
+                <CategoryFilter
+                  emitRefetch={(categoryId: string | undefined): void => selectCategory(categoryId)}
                   selectedCategoryId={selectedCategoryId}
                   type={selectedType}
                 />
@@ -214,7 +214,7 @@ const History = (): JSX.Element => {
 
         {/* Transactions List */}
         <div className="space-y-4">
-          {transactions.map((transaction, index): JSX.Element => {
+          {transactions.length && transactions.map((transaction, index): JSX.Element => {
             if (!transaction.id) {
               return (<span key={index}>sem transações</span>)
             }

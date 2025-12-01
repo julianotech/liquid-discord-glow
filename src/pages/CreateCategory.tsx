@@ -1,13 +1,13 @@
+import { ColorPicker } from "@/components/ColorPicker";
+import { IconPicker } from "@/components/IconPicker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCreateCategory } from "@/hooks/api/use-categories-api";
 import { toast } from "@/hooks/use-toast";
+import { ArrowDownCircle, ArrowLeft, ArrowUpCircle } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IconPicker } from "@/components/IconPicker";
-import { ColorPicker } from "@/components/ColorPicker";
-import { ArrowLeft, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
-import { useCreateCategory } from "@/hooks/api/use-categories-api";
 
 const CreateCategory = () => {
   const navigate = useNavigate();
@@ -34,20 +34,23 @@ const CreateCategory = () => {
     setIsSubmitting(true);
 
     try {
-      await createCategoryMutation.mutateAsync({
+      const variables = {
         title: categoryName,
         type: categoryType === "income",
         icon,
+        iconColor,
         bgColor,
         goal: categoryType === "expense" && goal ? goal : null,
-      });
+      }
+      // console.log({ variables })
+      await createCategoryMutation.mutateAsync(variables);
 
       toast({
         title: "Categoria criada",
         description: `A categoria '${categoryName}' foi criada com sucesso.`,
       });
 
-      navigate("/categories");
+      // navigate("/categories");
     } catch (error) {
       toast({
         title: "Erro ao criar categoria",
@@ -82,7 +85,7 @@ const CreateCategory = () => {
             <Label className="text-foreground font-medium">Nome da Categoria</Label>
             <Input
               value={categoryName}
-              onChange={(e) => setCategoryName(e.target.value)}
+              onChange={(e): void => setCategoryName(e.target.value)}
               placeholder="Ex: Alimentação, Salário..."
               className="bg-background/50 backdrop-blur-sm border border-border/50 focus:ring-2 focus:ring-primary/50 rounded-lg h-12"
             />
@@ -93,12 +96,11 @@ const CreateCategory = () => {
             <Label className="text-foreground font-medium">Tipo</Label>
             <div className="flex gap-3">
               <button
-                onClick={() => setCategoryType("expense")}
-                className={`flex-1 flex items-center justify-center gap-2 p-4 rounded-lg border-2 transition-all ${
-                  categoryType === "expense"
-                    ? "border-red-500 bg-red-500/10"
-                    : "border-border/50 bg-background/50"
-                }`}
+                onClick={(): void => setCategoryType("expense")}
+                className={`flex-1 flex items-center justify-center gap-2 p-4 rounded-lg border-2 transition-all ${categoryType === "expense"
+                  ? "border-red-500 bg-red-500/10"
+                  : "border-border/50 bg-background/50"
+                  }`}
               >
                 <ArrowDownCircle className={categoryType === "expense" ? "text-red-500" : "text-muted-foreground"} />
                 <span className={categoryType === "expense" ? "text-red-500 font-semibold" : "text-muted-foreground"}>
@@ -107,11 +109,10 @@ const CreateCategory = () => {
               </button>
               <button
                 onClick={() => setCategoryType("income")}
-                className={`flex-1 flex items-center justify-center gap-2 p-4 rounded-lg border-2 transition-all ${
-                  categoryType === "income"
-                    ? "border-green-500 bg-green-500/10"
-                    : "border-border/50 bg-background/50"
-                }`}
+                className={`flex-1 flex items-center justify-center gap-2 p-4 rounded-lg border-2 transition-all ${categoryType === "income"
+                  ? "border-green-500 bg-green-500/10"
+                  : "border-border/50 bg-background/50"
+                  }`}
               >
                 <ArrowUpCircle className={categoryType === "income" ? "text-green-500" : "text-muted-foreground"} />
                 <span className={categoryType === "income" ? "text-green-500 font-semibold" : "text-muted-foreground"}>
@@ -125,20 +126,20 @@ const CreateCategory = () => {
           <div className="space-y-2">
             <Label className="text-foreground font-medium">Ícone e Cores</Label>
             <div className="flex items-center gap-4">
-              <IconPicker 
-                value={icon} 
+              <IconPicker
+                value={icon}
                 onChange={setIcon}
                 iconColor={iconColor}
                 bgColor={bgColor}
               />
               <div className="flex-1 space-y-3">
-                <ColorPicker 
-                  value={bgColor} 
+                <ColorPicker
+                  value={bgColor}
                   onChange={setBgColor}
                   label="Cor de Fundo"
                 />
-                <ColorPicker 
-                  value={iconColor} 
+                <ColorPicker
+                  value={iconColor}
                   onChange={setIconColor}
                   label="Cor do Ícone"
                 />
@@ -154,7 +155,7 @@ const CreateCategory = () => {
                 type="number"
                 placeholder="0.00"
                 value={goal}
-                onChange={(e) => setGoal(e.target.value)}
+                onChange={(e): void => setGoal(e.target.value)}
                 className="bg-background/50 backdrop-blur-sm border border-border/50 focus:ring-2 focus:ring-primary/50 rounded-lg h-12"
                 step="0.01"
                 min="0"
@@ -167,15 +168,15 @@ const CreateCategory = () => {
 
           {/* Action Buttons */}
           <div className="flex gap-3 pt-4">
-            <Button 
-              variant="outline" 
-              onClick={() => navigate("/categories")}
+            <Button
+              variant="outline"
+              onClick={(): void => navigate("/categories")}
               className="flex-1 h-12 rounded-lg border-border/50 hover:bg-background/80"
               disabled={isSubmitting}
             >
               Cancelar
             </Button>
-            <Button 
+            <Button
               onClick={handleSubmit}
               className="flex-1 h-12 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
               disabled={isSubmitting}

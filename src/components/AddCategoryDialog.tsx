@@ -2,15 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/hooks/use-toast";
 import { useCreateCategory } from "@/hooks/api/use-categories-api";
+import { toast } from "@/hooks/use-toast";
 import { Description } from "@radix-ui/react-dialog";
 import { ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import { useState } from "react";
 import { ColorPicker } from "./ColorPicker";
 import { IconPicker } from "./IconPicker";
-
-
 
 interface AddCategoryDialogProps {
   open: boolean;
@@ -28,7 +26,7 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
   const [isSubmitting, setIsSubmitting] = useState(false);
   const createCategoryMutation = useCreateCategory();
 
-  const handleSave = async () => {
+  const handleSave = async (): Promise<void> => {
     if (!categoryName) {
       toast({
         title: "Erro",
@@ -40,15 +38,15 @@ export const AddCategoryDialog = ({ open, onOpenChange, onCategoryAdded }: AddCa
 
     setIsSubmitting(true);
     try {
-      await createCategoryMutation.mutateAsync({
+      const variables = {
         title: categoryName,
         type: categoryType === "income",
         goal: goal || null,
         icon,
         iconColor,
         bgColor,
-        userCreated: "current-user",
-      });
+      }
+      await createCategoryMutation.mutateAsync(variables);
 
       toast({
         title: "Categoria adicionada",

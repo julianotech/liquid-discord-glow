@@ -115,7 +115,7 @@ export default function CategoryItem({
                 )}
               </div>
               <Button variant="ghost" size="icon" onClick={(e) => {
-                e.stopPropagation(); // Previne o clique na Card de abrir o drawer
+                e.stopPropagation();
                 onEditCategory(category);
               }}>
                 <Pencil className="w-5 h-5 text-muted-foreground" />
