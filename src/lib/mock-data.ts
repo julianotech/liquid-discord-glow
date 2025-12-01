@@ -12,6 +12,7 @@ export const mockCategories: Category[] = [
     iconColor: "#ef4444",
     bgColor: "#fee2e2",
     userCreated: "1",
+    walletId: "1",
     createdAt: now,
     updatedAt: now,
     spent: 0
@@ -25,6 +26,7 @@ export const mockCategories: Category[] = [
     iconColor: "#3b82f6",
     bgColor: "#dbeafe",
     userCreated: "1",
+    walletId: "1",
     createdAt: now,
     updatedAt: now,
     spent: 0
@@ -38,6 +40,7 @@ export const mockCategories: Category[] = [
     iconColor: "#8b5cf6",
     bgColor: "#ede9fe",
     userCreated: "1",
+    walletId: "1",
     createdAt: now,
     updatedAt: now,
     spent: 0
@@ -51,6 +54,7 @@ export const mockCategories: Category[] = [
     iconColor: "#10b981",
     bgColor: "#d1fae5",
     userCreated: "1",
+    walletId: "1",
     createdAt: now,
     updatedAt: now,
     spent: 0
@@ -64,6 +68,7 @@ export const mockCategories: Category[] = [
     iconColor: "#06b6d4",
     bgColor: "#cffafe",
     userCreated: "1",
+    walletId: "1",
     createdAt: now,
     updatedAt: now,
     spent: 0

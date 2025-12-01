@@ -21,6 +21,15 @@ export interface Category {
   iconColor: string | null;
   bgColor: string | null;
   userCreated: string;
+  walletId: string;
+}
+
+export interface Wallet {
+  id: string;
+  name: string;
+  code: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 export interface ApiResponse<T> {
   success: boolean;
